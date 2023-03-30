@@ -1,6 +1,7 @@
 package com.sefatombul.gcase.di
 
 import android.os.Environment
+import com.sefatombul.gcase.data.remote.AuthService
 import com.sefatombul.gcase.utils.Constants
 import com.sefatombul.gcase.utils.Constants.CACHE_MAX_SIZE
 import dagger.Module
@@ -48,25 +49,25 @@ object AppModule {
             .build()
     }
 
-    @Singleton
+    @AuthRetrofit
     @Provides
     fun provideRetrofit(
         okHttpClient: OkHttpClient,
         gsonConverterFactory: GsonConverterFactory
     ): Retrofit {
         return Retrofit.Builder()
-            .baseUrl(Constants.GITHUB_BASE_URL)
+            .baseUrl(Constants.GITHUB_AUTH_BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(gsonConverterFactory)
             .build()
     }
 
 
-//    @Singleton
-//    @Provides
-//    fun provideTwitterService(retrofit: Retrofit): TwitterService {
-//        return retrofit.create(TwitterService::class.java)
-//    }
+    @Singleton
+    @Provides
+    fun provideAuthService(@AuthRetrofit retrofit: Retrofit): AuthService {
+        return retrofit.create(AuthService::class.java)
+    }
 
 
 }

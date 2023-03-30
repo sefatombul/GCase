@@ -18,6 +18,8 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.IdRes
 import androidx.core.content.pm.PackageInfoCompat
 import androidx.core.os.postDelayed
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import com.bumptech.glide.Glide
@@ -27,6 +29,34 @@ import retrofit2.Response
 import timber.log.Timber
 import java.net.ConnectException
 
+
+fun <T> LiveData<Resource<T>?>.observeCall(
+    lifecycleOwner: LifecycleOwner,
+    error: ((message: String?) -> Unit)? = null,
+    loading: (() -> Unit)? = null,
+    success: ((data: T?) -> Unit)? = null,
+) {
+    this.observe(lifecycleOwner) { response ->
+        when (response) {
+            is Resource.Error -> {
+                error?.let { f ->
+                    f(response.message)
+                }
+            }
+            is Resource.Success -> {
+                success?.let { f ->
+                    f(response.data)
+                }
+            }
+            is Resource.Loading -> {
+                loading?.let { f ->
+                    f()
+                }
+            }
+            else -> {}
+        }
+    }
+}
 
 suspend fun <T> globalSafeCall(
     context: Context,
