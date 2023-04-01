@@ -1,7 +1,9 @@
 package com.sefatombul.gcase.data.remote
 
 import com.sefatombul.gcase.data.model.AccessToken
+import com.sefatombul.gcase.data.model.RevokeAccessRequestModel
 import com.sefatombul.gcase.utils.Constants
+import com.sefatombul.gcase.utils.convertBase64
 import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.*
@@ -25,5 +27,13 @@ interface AuthService {
         @Field("grant_type") grantType: String = "refresh_token"
     ): Response<String>
 
+
+    @HTTP(method = "DELETE", hasBody = true)
+    suspend fun revokeAccess(
+        @Header("Accept") accept: String = "application/vnd.github+json",
+        @Header("Authorization") authorization: String = "Basic ${convertBase64("${Constants.CLIENT_ID}:${Constants.CLIENT_SECRET}")}",
+        @Url url: String = Constants.REVOKE_ACCESS_URL,
+        @Body requestModel: RevokeAccessRequestModel
+    ): Response<Any>
 
 }

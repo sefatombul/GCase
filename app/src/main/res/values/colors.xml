@@ -12,4 +12,7 @@
     <color name="black_coral">#53646E</color>
     <color name="light_silver">#D4D8DA</color>
     <color name="loading_placeholder_color">#66646464</color>
+    <color name="denim">#0B64C8</color>
+    <color name="spanish_gray">#9296A1</color>
+    <color name="arsenic">#41434F</color>
 </resources>

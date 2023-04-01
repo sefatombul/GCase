@@ -10,4 +10,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="login_failed">Oturum açma işlemi başarısız!</string>
+    <string name="home">Home</string>
+    <string name="my_work">My Work</string>
+    <string name="repositories">Repositories</string>
 </resources>

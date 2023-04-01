@@ -39,7 +39,6 @@ class SplashFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        sessionControl()
         subscribeObervers()
     }
 
@@ -122,5 +121,11 @@ class SplashFragment : Fragment() {
         handlerPostDelay(requireContext(), 1000L) {
             findNavController().safeNavigate(R.id.action_splashFragment_to_loginFragment)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        sessionControl()
+
     }
 }

@@ -7,9 +7,7 @@ object RequestHelper {
     fun <T> handleResponse(response: Response<T>): Resource<T> {
         if (response != null) {
             if (response.isSuccessful) {
-                response.body()?.let {
-                    return Resource.Success(it) as Resource<T>
-                }
+                return Resource.Success(response.body()) as Resource<T>
             } else {
                 val responseCode = response.code()
                 Timber.e(responseCode.toString())

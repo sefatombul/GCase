@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.sefatombul.gcase.data.model.AccessToken
+import com.sefatombul.gcase.data.model.RevokeAccessRequestModel
 import com.sefatombul.gcase.data.repository.AuthRepository
 import com.sefatombul.gcase.utils.Resource
 import com.sefatombul.gcase.utils.globalSafeCall
@@ -33,6 +34,13 @@ class AuthViewModel @Inject constructor(
 
     private var _setAuthTokenClearResponse: MutableLiveData<Resource<Any>?> = MutableLiveData()
     val setAuthTokenClearResponse: LiveData<Resource<Any>?> get() = _setAuthTokenClearResponse
+
+    private var _revokeAccessResponse: MutableLiveData<Resource<Any>?> = MutableLiveData()
+    val revokeAccessResponse: LiveData<Resource<Any>?> get() = _revokeAccessResponse
+
+    fun clearRevokeAccessResponse() {
+        _revokeAccessResponse.postValue(null)
+    }
 
     fun clearSetAuthTokenClearResponse() {
         _setAuthTokenClearResponse.postValue(null)
@@ -93,6 +101,17 @@ class AuthViewModel @Inject constructor(
         _setAuthTokenClearResponse.postValue(Resource.Loading())
         _setAuthTokenClearResponse.postValue(globalSafeCall(getApplication()) {
             authRepository.setAuthTokenClear()
+        })
+    }
+
+    fun revokeAccess(requestModel: RevokeAccessRequestModel) = viewModelScope.launch {
+        revokeAccessSafeCall(requestModel)
+    }
+
+    private suspend fun revokeAccessSafeCall(requestModel : RevokeAccessRequestModel) {
+        _revokeAccessResponse.postValue(Resource.Loading())
+        _revokeAccessResponse.postValue(globalSafeCall(getApplication()) {
+            authRepository.revokeAccess(requestModel)
         })
     }
 

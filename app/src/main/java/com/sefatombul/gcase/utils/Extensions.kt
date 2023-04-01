@@ -30,14 +30,23 @@ import com.sefatombul.gcase.utils.Constants.UNKNOWN_ERROR
 import retrofit2.Response
 import timber.log.Timber
 import java.net.ConnectException
+import java.nio.charset.StandardCharsets
+import java.util.*
 
+fun convertBase64(text: String): String {
+    return Base64.getEncoder().encodeToString(
+        text.toByteArray(
+            StandardCharsets.UTF_8
+        )
+    )
+}
 
 fun <T> LiveData<Resource<T>?>.observeCall(
     activity: Activity,
     lifecycleOwner: LifecycleOwner,
     error: ((message: String?) -> Unit)? = null,
     loading: (() -> Unit)? = null,
-    isAutoShowLoading:Boolean = true,
+    isAutoShowLoading: Boolean = true,
     success: ((data: T?) -> Unit)? = null,
     finally: (() -> Unit)? = null,
 ) {
@@ -50,7 +59,7 @@ fun <T> LiveData<Resource<T>?>.observeCall(
                 finally?.let {
                     it()
                 }
-                if(isAutoShowLoading){
+                if (isAutoShowLoading) {
                     (activity as? MainActivity)?.let {
                         it.hideLoading()
                     }
@@ -63,7 +72,7 @@ fun <T> LiveData<Resource<T>?>.observeCall(
                 finally?.let {
                     it()
                 }
-                if(isAutoShowLoading){
+                if (isAutoShowLoading) {
                     (activity as? MainActivity)?.let {
                         it.hideLoading()
                     }
@@ -73,7 +82,7 @@ fun <T> LiveData<Resource<T>?>.observeCall(
                 loading?.let { f ->
                     f()
                 }
-                if(isAutoShowLoading){
+                if (isAutoShowLoading) {
                     (activity as? MainActivity)?.let {
                         it.showLoading()
                     }
