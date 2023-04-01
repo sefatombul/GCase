@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     tools:openDrawer="start">
 
-    <FrameLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -19,7 +19,29 @@
             app:defaultNavHost="true"
             app:navGraph="@navigation/nav_graph" />
 
-    </FrameLayout>
+        <LinearLayout
+            android:id="@+id/llLoading"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/loading_placeholder_color"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true"
+            android:orientation="vertical"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+
+            <ProgressBar
+                android:layout_width="50dp"
+                android:layout_height="50dp" />
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"

@@ -7,6 +7,7 @@
     <string name="logout_message">Hesabınızdan çıkış yapmak istediğinize emin misiniz?</string>
     <string name="yes">Evet</string>
     <string name="cancel">İptal</string>
-<!-- TODO: Remove or change this placeholder text -->
+    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="login_failed">Oturum açma işlemi başarısız!</string>
 </resources>

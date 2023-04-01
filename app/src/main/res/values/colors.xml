@@ -11,4 +11,5 @@
     <color name="chinese_black">#0F1418</color>
     <color name="black_coral">#53646E</color>
     <color name="light_silver">#D4D8DA</color>
+    <color name="loading_placeholder_color">#66646464</color>
 </resources>

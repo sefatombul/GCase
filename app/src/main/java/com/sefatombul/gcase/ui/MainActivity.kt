@@ -8,7 +8,9 @@ import androidx.navigation.fragment.NavHostFragment
 import com.sefatombul.gcase.R
 import com.sefatombul.gcase.databinding.ActivityMainBinding
 import com.sefatombul.gcase.utils.PopupHelper.showAlertDialog
+import com.sefatombul.gcase.utils.remove
 import com.sefatombul.gcase.utils.safeNavigate
+import com.sefatombul.gcase.utils.show
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -34,6 +36,17 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    fun showLoading() {
+        binding.apply {
+            llLoading.show()
+        }
+    }
+
+    fun hideLoading() {
+        binding.apply {
+            llLoading.remove()
+        }
+    }
 
     fun openSideMenu() {
         binding.apply {

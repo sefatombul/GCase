@@ -1,6 +1,7 @@
 package com.sefatombul.gcase.utils
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.ActivityManager
 import android.content.Context
 import android.content.pm.PackageManager
@@ -24,6 +25,7 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import com.bumptech.glide.Glide
 import com.sefatombul.gcase.R
+import com.sefatombul.gcase.ui.MainActivity
 import com.sefatombul.gcase.utils.Constants.UNKNOWN_ERROR
 import retrofit2.Response
 import timber.log.Timber
@@ -31,10 +33,13 @@ import java.net.ConnectException
 
 
 fun <T> LiveData<Resource<T>?>.observeCall(
+    activity: Activity,
     lifecycleOwner: LifecycleOwner,
     error: ((message: String?) -> Unit)? = null,
     loading: (() -> Unit)? = null,
+    isAutoShowLoading:Boolean = true,
     success: ((data: T?) -> Unit)? = null,
+    finally: (() -> Unit)? = null,
 ) {
     this.observe(lifecycleOwner) { response ->
         when (response) {
@@ -42,15 +47,36 @@ fun <T> LiveData<Resource<T>?>.observeCall(
                 error?.let { f ->
                     f(response.message)
                 }
+                finally?.let {
+                    it()
+                }
+                if(isAutoShowLoading){
+                    (activity as? MainActivity)?.let {
+                        it.hideLoading()
+                    }
+                }
             }
             is Resource.Success -> {
                 success?.let { f ->
                     f(response.data)
                 }
+                finally?.let {
+                    it()
+                }
+                if(isAutoShowLoading){
+                    (activity as? MainActivity)?.let {
+                        it.hideLoading()
+                    }
+                }
             }
             is Resource.Loading -> {
                 loading?.let { f ->
                     f()
+                }
+                if(isAutoShowLoading){
+                    (activity as? MainActivity)?.let {
+                        it.showLoading()
+                    }
                 }
             }
             else -> {}
