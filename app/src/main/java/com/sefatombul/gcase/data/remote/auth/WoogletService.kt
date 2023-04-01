@@ -1,4 +1,4 @@
-package com.sefatombul.gcase.data.remote
+package com.sefatombul.gcase.data.remote.auth
 
 import okhttp3.ResponseBody
 import retrofit2.Response

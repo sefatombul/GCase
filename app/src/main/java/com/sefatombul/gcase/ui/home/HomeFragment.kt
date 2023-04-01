@@ -41,6 +41,7 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        (requireActivity() as? MainActivity)?.showBottomNavigation()
         handleClickEventsListener()
         subscribeObservers()
     }
@@ -57,6 +58,10 @@ class HomeFragment : Fragment() {
                         )
                     )
                 }
+            }
+
+            clRepositoriesLayout.setOnClickListener {
+                findNavController().safeNavigate(R.id.action_homeFragment_to_repositoryListFragment)
             }
         }
     }

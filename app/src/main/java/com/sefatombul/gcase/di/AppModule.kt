@@ -3,8 +3,9 @@ package com.sefatombul.gcase.di
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Environment
-import com.sefatombul.gcase.data.remote.AuthService
-import com.sefatombul.gcase.data.remote.WoogletService
+import com.sefatombul.gcase.data.remote.ApiService
+import com.sefatombul.gcase.data.remote.auth.AuthService
+import com.sefatombul.gcase.data.remote.auth.WoogletService
 import com.sefatombul.gcase.utils.Constants
 import com.sefatombul.gcase.utils.Constants.CACHE_MAX_SIZE
 import com.sefatombul.gcase.utils.PreferencesRepository
@@ -16,7 +17,6 @@ import dagger.hilt.components.SingletonComponent
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.CallAdapter
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
@@ -50,9 +50,24 @@ object AppModule {
         return GsonConverterFactory.create()
     }
 
-    @Singleton
+    @AuthOkHttpClient
     @Provides
     fun provideHttpClient(
+        loggingInterceptor: HttpLoggingInterceptor,
+    ): OkHttpClient {
+        val cache = Cache(Environment.getDownloadCacheDirectory(), CACHE_MAX_SIZE.toLong())
+        return OkHttpClient.Builder()
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(1, TimeUnit.MINUTES)
+            .writeTimeout(1, TimeUnit.MINUTES)
+            .cache(cache)
+            .addInterceptor(loggingInterceptor)
+            .build()
+    }
+
+    @ApiOkHttpClient
+    @Provides
+    fun provideApiHttpClient(
         loggingInterceptor: HttpLoggingInterceptor,
         serviceInterceptor: ServiceInterceptor
     ): OkHttpClient {
@@ -70,7 +85,7 @@ object AppModule {
     @AuthRetrofit
     @Provides
     fun provideAuthRetrofit(
-        okHttpClient: OkHttpClient,
+        @AuthOkHttpClient okHttpClient: OkHttpClient,
         gsonConverterFactory: GsonConverterFactory
     ): Retrofit {
         return Retrofit.Builder()
@@ -84,11 +99,25 @@ object AppModule {
     @WoogletRetrofit
     @Provides
     fun provideWoogletRetrofit(
-        okHttpClient: OkHttpClient,
+        @AuthOkHttpClient okHttpClient: OkHttpClient,
         gsonConverterFactory: GsonConverterFactory
     ): Retrofit {
         return Retrofit.Builder()
             .baseUrl(Constants.WOOGLET_BASE_URL)
+            .client(okHttpClient)
+            .addConverterFactory(ScalarsConverterFactory.create())
+            .addConverterFactory(gsonConverterFactory)
+            .build()
+    }
+
+    @ApiRetrofit
+    @Provides
+    fun provideApiRetrofit(
+        @ApiOkHttpClient okHttpClient: OkHttpClient,
+        gsonConverterFactory: GsonConverterFactory
+    ): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl(Constants.GITHUB_API_BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(ScalarsConverterFactory.create())
             .addConverterFactory(gsonConverterFactory)
@@ -106,6 +135,12 @@ object AppModule {
     @Provides
     fun provideWoogletService(@WoogletRetrofit retrofit: Retrofit): WoogletService {
         return retrofit.create(WoogletService::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun provideApiService(@ApiRetrofit retrofit: Retrofit): ApiService {
+        return retrofit.create(ApiService::class.java)
     }
 
 

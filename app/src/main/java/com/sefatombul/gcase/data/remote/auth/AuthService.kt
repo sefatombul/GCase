@@ -1,4 +1,4 @@
-package com.sefatombul.gcase.data.remote
+package com.sefatombul.gcase.data.remote.auth
 
 import com.sefatombul.gcase.data.model.AccessToken
 import com.sefatombul.gcase.data.model.RevokeAccessRequestModel

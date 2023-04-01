@@ -11,6 +11,7 @@ import androidx.navigation.fragment.findNavController
 import com.sefatombul.gcase.R
 import com.sefatombul.gcase.databinding.FragmentHomeBinding
 import com.sefatombul.gcase.databinding.FragmentSplashBinding
+import com.sefatombul.gcase.ui.MainActivity
 import com.sefatombul.gcase.utils.*
 import com.sefatombul.gcase.viewmodels.AuthViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -39,6 +40,7 @@ class SplashFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        (requireActivity() as? MainActivity)?.hideBottomNavigation()
         subscribeObervers()
     }
 
@@ -48,7 +50,6 @@ class SplashFragment : Fragment() {
                 requireActivity(),
                 viewLifecycleOwner,
                 error = {
-                    navigateLogin()
                 },
                 isAutoShowLoading = false,
                 success = { result ->

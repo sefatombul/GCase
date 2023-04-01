@@ -1,11 +1,17 @@
 package com.sefatombul.gcase.ui
 
+import android.graphics.drawable.GradientDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Gravity
 import androidx.activity.viewModels
+import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.bottomnavigation.BottomNavigationItemView
+import com.google.android.material.bottomnavigation.BottomNavigationMenuView
 import com.sefatombul.gcase.R
 import com.sefatombul.gcase.data.model.RevokeAccessRequestModel
 import com.sefatombul.gcase.databinding.ActivityMainBinding
@@ -29,8 +35,24 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         navControllerSetup()
         sideMenuSetup()
+        setupBottomNavigation()
     }
 
+    private fun setupBottomNavigation() {
+        binding.bottomNavigation.setupWithNavController(navController)
+    }
+
+    fun hideBottomNavigation() {
+        binding.apply {
+            bottomNavigation.remove()
+        }
+    }
+
+    fun showBottomNavigation() {
+        binding.apply {
+            bottomNavigation.show()
+        }
+    }
 
     private fun navControllerSetup() {
         binding.apply {
@@ -54,7 +76,7 @@ class MainActivity : AppCompatActivity() {
 
     fun openSideMenu(f: () -> Unit) {
         binding.apply {
-            drawerLayout.open()
+            drawerLayout.openDrawer(Gravity.RIGHT)
             positiveButtonClickListener = f
         }
     }
@@ -79,7 +101,7 @@ class MainActivity : AppCompatActivity() {
                             })
                     }
                 }
-                drawerLayout.close()
+                drawerLayout.closeDrawer(Gravity.RIGHT)
                 return@setNavigationItemSelectedListener true
             }
         }

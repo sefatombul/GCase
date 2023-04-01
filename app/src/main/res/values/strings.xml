@@ -16,4 +16,10 @@
     <string name="profile">Profile</string>
     <string name="explorer">Explorer</string>
     <string name="notification">Notification</string>
+    <string name="search_github">Search Github</string>
+    <string name="recent_searchR">Resent Search</string>
+    <string name="recent_search">Recent Search</string>
+    <string name="clear">CLEAR</string>
+    <string name="find_your_stuff">Find your stuff</string>
+    <string name="empty_list_text">Search all og Github for People, Repositories, Organizations, Issues and Pull Requests.</string>
 </resources>

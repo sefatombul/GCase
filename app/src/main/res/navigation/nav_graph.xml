@@ -25,6 +25,9 @@
             app:destination="@id/loginFragment"
             app:popUpTo="@id/homeFragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_homeFragment_to_repositoryListFragment"
+            app:destination="@id/repositoryListFragment" />
     </fragment>
     <fragment
         android:id="@+id/splashFragment"
@@ -41,4 +44,18 @@
             app:popUpTo="@id/splashFragment"
             app:popUpToInclusive="true" />
     </fragment>
+    <fragment
+        android:id="@+id/repositoryListFragment"
+        android:name="com.sefatombul.gcase.ui.repository.RepositoryListFragment"
+        android:label="fragment_repository_list"
+        tools:layout="@layout/fragment_repository_list" >
+        <action
+            android:id="@+id/action_repositoryListFragment_to_repositoryDetailFragment"
+            app:destination="@id/repositoryDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/repositoryDetailFragment"
+        android:name="com.sefatombul.gcase.ui.repository.RepositoryDetailFragment"
+        android:label="fragment_repository_detail"
+        tools:layout="@layout/fragment_repository_detail" />
 </navigation>
