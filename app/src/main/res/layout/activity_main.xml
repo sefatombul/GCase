@@ -15,8 +15,10 @@
             android:id="@+id/navHostFragment"
             android:name="androidx.navigation.fragment.NavHostFragment"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
             app:defaultNavHost="true"
+            app:layout_constraintBottom_toTopOf="@+id/bottomNavigation"
+            app:layout_constraintTop_toTopOf="parent"
             app:navGraph="@navigation/nav_graph" />
 
         <LinearLayout
@@ -24,9 +26,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/loading_placeholder_color"
-            android:gravity="center"
             android:clickable="true"
             android:focusable="true"
+            android:gravity="center"
             android:orientation="vertical"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -41,7 +43,26 @@
 
         </LinearLayout>
 
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottomNavigation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:animateLayoutChanges="false"
+            android:background="@drawable/bottom_navigation_view_background"
+            app:itemBackground="@drawable/bottom_navigation_item_background"
+            app:itemIconSize="26dp"
+            app:itemIconTint="@drawable/bottom_navigation_view_item_color"
+            app:itemTextAppearanceActive="@style/BottomNavigationView.Active"
+            app:itemTextAppearanceInactive="@style/BottomNavigationView"
+            app:itemTextColor="@drawable/bottom_navigation_view_item_color"
+            app:labelVisibilityMode="labeled"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:menu="@menu/bottom_nav_menu" />
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"

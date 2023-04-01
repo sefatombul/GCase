@@ -13,4 +13,7 @@
     <string name="home">Home</string>
     <string name="my_work">My Work</string>
     <string name="repositories">Repositories</string>
+    <string name="profile">Profile</string>
+    <string name="explorer">Explorer</string>
+    <string name="notification">Notification</string>
 </resources>

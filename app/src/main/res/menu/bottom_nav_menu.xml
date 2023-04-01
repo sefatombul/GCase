@@ -1,4 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/homeFragment"
+        android:icon="@drawable/baseline_home_24"
+        android:title="@string/home" />
 
+    <item
+        android:id="@+id/notificationFragment"
+        android:icon="@drawable/baseline_notifications_24"
+        android:title="@string/notification" />
+
+    <item
+        android:id="@+id/explorerFragment"
+        android:icon="@drawable/baseline_explore_24"
+        android:title="@string/explorer" />
+
+    <item
+        android:id="@+id/profileFragment"
+        android:icon="@drawable/baseline_person_24"
+        android:title="@string/profile" />
 </menu>
