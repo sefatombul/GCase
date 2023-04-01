@@ -22,4 +22,11 @@
     <string name="clear">CLEAR</string>
     <string name="find_your_stuff">Find your stuff</string>
     <string name="empty_list_text">Search all og Github for People, Repositories, Organizations, Issues and Pull Requests.</string>
+    <string name="stars">stars</string>
+    <string name="forks">forks</string>
+    <string name="star">STAR</string>
+    <string name="default_brach">DEFAULT BRANCH</string>
+    <string name="open_issues">Open Issues</string>
+    <string name="watchers">Watchers</string>
+    <string name="license">License</string>
 </resources>

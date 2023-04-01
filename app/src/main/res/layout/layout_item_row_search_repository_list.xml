@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:paddingHorizontal="16dp"
+    android:paddingVertical="21dp">
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/mcvProfile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="360dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/ivProfile"
+            android:layout_width="16dp"
+            android:layout_height="16dp" />
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <TextView
+        android:id="@+id/tvUserName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="0dp"
+        android:fontFamily="@font/inter"
+        android:textColor="@color/davys_grey"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toBottomOf="@+id/mcvProfile"
+        app:layout_constraintStart_toEndOf="@id/mcvProfile"
+        app:layout_constraintTop_toTopOf="@id/mcvProfile"
+        app:layout_goneMarginStart="9dp"
+        tools:text="name" />
+
+    <TextView
+        android:id="@+id/tvSearchText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="11dp"
+        android:fontFamily="@font/inter_medium"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mcvProfile"
+        tools:text="q" />
+
+    <TextView
+        android:id="@+id/tvRepositoryDesc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/inter"
+        android:textColor="@color/davys_grey"
+        android:textSize="15sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvSearchText"
+        app:layout_goneMarginStart="9dp"
+        tools:text="desc" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clRepositoryBottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="13dp"
+        android:layout_marginBottom="18dp"
+        app:layout_constraintTop_toBottomOf="@+id/tvRepositoryDesc">
+
+        <ImageView
+            android:id="@+id/ivStar"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:src="@drawable/baseline_star_24"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/sunglow" />
+
+        <TextView
+            android:id="@+id/tvStar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:fontFamily="@font/inter"
+            android:textColor="@color/davys_grey"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/ivStar"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_goneMarginStart="9dp"
+            tools:text="15k" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/mcvLanguage"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_marginStart="10dp"
+            app:cardBackgroundColor="@color/spanish_gray"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tvStar"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvLanguage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:fontFamily="@font/inter"
+            android:textColor="@color/davys_grey"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/mcvLanguage"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="JavaScript" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

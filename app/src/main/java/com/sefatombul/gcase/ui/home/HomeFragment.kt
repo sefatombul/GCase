@@ -60,6 +60,10 @@ class HomeFragment : Fragment() {
                 }
             }
 
+            ivSearch.setOnClickListener {
+                findNavController().safeNavigate(R.id.action_homeFragment_to_searchFragment)
+            }
+
             clRepositoriesLayout.setOnClickListener {
                 findNavController().safeNavigate(R.id.action_homeFragment_to_repositoryListFragment)
             }

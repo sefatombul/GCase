@@ -28,6 +28,9 @@
         <action
             android:id="@+id/action_homeFragment_to_repositoryListFragment"
             app:destination="@id/repositoryListFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_searchFragment"
+            app:destination="@id/searchFragment" />
     </fragment>
     <fragment
         android:id="@+id/splashFragment"
@@ -58,4 +61,24 @@
         android:name="com.sefatombul.gcase.ui.repository.RepositoryDetailFragment"
         android:label="fragment_repository_detail"
         tools:layout="@layout/fragment_repository_detail" />
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.sefatombul.gcase.ui.search.SearchFragment"
+        android:label="SearchFragment" >
+        <action
+            android:id="@+id/action_searchFragment_to_searchRepositoryListFragment"
+            app:destination="@id/searchRepositoryListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/searchRepositoryDetailFragment"
+        android:name="com.sefatombul.gcase.ui.search.SearchRepositoryDetailFragment"
+        android:label="SearchRepositoryDetailFragment" />
+    <fragment
+        android:id="@+id/searchRepositoryListFragment"
+        android:name="com.sefatombul.gcase.ui.search.SearchRepositoryListFragment"
+        android:label="SearchRepositoryListFragment" >
+        <action
+            android:id="@+id/action_searchRepositoryListFragment_to_searchRepositoryDetailFragment"
+            app:destination="@id/searchRepositoryDetailFragment" />
+    </fragment>
 </navigation>
