@@ -1,9 +1,10 @@
-package com.sefatombul.gcase.ui.search
+package com.sefatombul.gcase.ui.search.repository
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -13,12 +14,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sefatombul.gcase.R
 import com.sefatombul.gcase.adapters.search.SearchRepositoryListAdapter
+import com.sefatombul.gcase.data.model.search.Sort
 import com.sefatombul.gcase.databinding.FragmentSearchRepositoryListBinding
 import com.sefatombul.gcase.ui.MainActivity
-import com.sefatombul.gcase.utils.Constants
-import com.sefatombul.gcase.utils.backStackCustom
-import com.sefatombul.gcase.utils.observeCall
-import com.sefatombul.gcase.viewmodels.RecentSearchViewModel
+import com.sefatombul.gcase.ui.search.sort.SortBottomSheetFragment
+import com.sefatombul.gcase.utils.*
 import com.sefatombul.gcase.viewmodels.SearchViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -28,13 +28,36 @@ class SearchRepositoryListFragment : Fragment() {
     var _binding: FragmentSearchRepositoryListBinding? = null
     val binding: FragmentSearchRepositoryListBinding get() = _binding!!
 
+    val sortBottomSheet: SortBottomSheetFragment by lazy { SortBottomSheetFragment() }
+    var sort: Sort = Sort("Best Match", null, true)
+    var order: Sort = Sort("Highest number of matches", "desc", true)
+
+    /**
+     * Search Repository List ekranı ilk defa acıldıysa false değerini alır.
+     * Bir sonraki fragmentta geri gelinme işlemi yapıldıysa true değerini alır
+     * */
     var isPopBackStack = false
 
     val searchViewModel: SearchViewModel by viewModels()
 
+    /**
+     * Her sayfalama için gösterilecek item sayısı
+     * */
     private val pageSize = 30
+
+    /**
+     * Gösterilen itemların hangi sayfa dilimine ait olduğu
+     * */
     private var page = 1
+
+    /**
+     * Aratılan değerin remote tarafta kaç item ile eşleştiği bilgisi
+     * */
     private var total = 0
+
+    /**
+     * Aratılan kelime
+     * */
     private var searchText: String? = null
 
     val searchRepositoryListAdapter: SearchRepositoryListAdapter by lazy { SearchRepositoryListAdapter() }
@@ -68,7 +91,59 @@ class SearchRepositoryListFragment : Fragment() {
         recyclerviewSetup()
         subscribeObversers()
         handleClickEventsListener()
+        /**
+         * Ekran ilk defa acıldıysa aranan kelime için ilk sayfa bilgisi alınır
+         * */
         if (!isPopBackStack) performRepositorySearch()
+    }
+
+    private fun showSortBottomSheet() {
+        val sortList = arrayListOf(
+            Sort("Best Match", null, false),
+            Sort("Stars", "stars", false),
+            Sort("Forks", "forks", false),
+            Sort("Help Wanted Issues", "help-wanted-issues", false),
+            Sort("Updated", "updated", false),
+        )
+        sortList.forEach { item ->
+            if (item.key == sort.key) {
+                item.isChecked = true
+            }
+        }
+        sortBottomSheet.setSortList(
+            sortList
+        )
+
+        val orderList = arrayListOf(
+            Sort("Highest number of matches", "desc", false),
+            Sort("Lowest number of matches", "asc", false),
+        )
+        orderList.forEach { item ->
+            if (item.key == order.key) {
+                item.isChecked = true
+            }
+        }
+
+        sortBottomSheet.setOrderList(
+            orderList
+        )
+
+        sortBottomSheet.applySetOnClickListener { sortSelected, orderSelected ->
+            page = 1
+            if (sortSelected != null) {
+                sort = sortSelected
+            }
+            if (orderSelected != null) {
+                order = orderSelected
+            }
+            performRepositorySearch()
+        }
+
+        if (!sortBottomSheet.isAdded) {
+            sortBottomSheet.show(
+                requireActivity().supportFragmentManager, "sortBottomSheet"
+            )
+        }
     }
 
     private fun handleClickEventsListener() {
@@ -76,7 +151,9 @@ class SearchRepositoryListFragment : Fragment() {
             ivBack.setOnClickListener {
                 findNavController().backStackCustom()
             }
-
+            ivSort.setOnClickListener {
+                showSortBottomSheet()
+            }
             searchRepositoryListAdapter.apply {
                 setOnClickListener { item, position ->
                     val bundle = Bundle().apply {
@@ -130,8 +207,26 @@ class SearchRepositoryListFragment : Fragment() {
         binding.apply {
             if (!searchText.isNullOrBlank()) {
                 searchViewModel.searchRepository(
-                    searchText!!, pageSize, page
+                    searchText = searchText!!,
+                    pageSize = pageSize,
+                    page = page,
+                    sort = sort.key,
+                    order = order.key ?: "desc"
                 )
+            }
+        }
+    }
+
+    /**
+     * Repository listesi boş ise empty text görünür olacak
+     * liste dolu ise empty text gizlenecek
+     * */
+    private fun repositoryListControl() {
+        binding.apply {
+            if (searchRepositoryListAdapter.list.isNullOrEmpty()) {
+                tvNothingSee.show()
+            } else {
+                tvNothingSee.remove()
             }
         }
     }
@@ -142,6 +237,10 @@ class SearchRepositoryListFragment : Fragment() {
                 viewLifecycleOwner,
                 error = {},
                 loading = {
+                    /**
+                     * Sayfa ilk açıldıgında loading görünsün
+                     * Her sayfalama için loading kapatıldı
+                     * */
                     if (page == 1) {
                         (requireActivity() as? MainActivity)?.showLoading()
                     }
@@ -151,8 +250,15 @@ class SearchRepositoryListFragment : Fragment() {
                     response?.let { result ->
                         total = result.totalCount ?: 0
                         if (page == 1) {
+                            /**
+                             * Adaptör listesi temizlenir gelen veriler temiz liste üzerine verilir
+                             * */
                             searchRepositoryListAdapter.setList(result.items)
                         } else if (page > 1) {
+                            /**
+                             * Adaptör listesi temizlenmez. Sayfalama işlemi sonucudur
+                             * Gelen veriler var olan listenin üzerine eklenir
+                             * */
                             searchRepositoryListAdapter.addList(result.items)
                         }
                     }
@@ -162,6 +268,7 @@ class SearchRepositoryListFragment : Fragment() {
                     if (page == 1) {
                         (requireActivity() as? MainActivity)?.hideLoading()
                     }
+                    repositoryListControl()
                 })
         }
     }

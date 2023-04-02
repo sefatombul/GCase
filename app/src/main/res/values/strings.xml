@@ -29,4 +29,8 @@
     <string name="open_issues">Open Issues</string>
     <string name="watchers">Watchers</string>
     <string name="license">License</string>
+    <string name="nothing_to_see_here">Nothing to see here</string>
+    <string name="sort">Sort</string>
+    <string name="order">Order</string>
+    <string name="apply">Apply</string>
 </resources>

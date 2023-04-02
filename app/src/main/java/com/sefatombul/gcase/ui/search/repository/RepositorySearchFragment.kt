@@ -1,4 +1,4 @@
-package com.sefatombul.gcase.ui.search
+package com.sefatombul.gcase.ui.search.repository
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView.OnEditorActionListener
-import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -14,18 +13,22 @@ import androidx.navigation.fragment.findNavController
 import com.sefatombul.gcase.R
 import com.sefatombul.gcase.adapters.RecentSearchListAdapter
 import com.sefatombul.gcase.data.local.RecentSearchModel
+import com.sefatombul.gcase.data.local.RecentSearchType
 import com.sefatombul.gcase.databinding.FragmentSearchBinding
 import com.sefatombul.gcase.ui.MainActivity
 import com.sefatombul.gcase.utils.*
 import com.sefatombul.gcase.viewmodels.RecentSearchViewModel
-import com.sefatombul.gcase.viewmodels.SearchViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 
 @AndroidEntryPoint
-class SearchFragment : Fragment() {
+class RepositorySearchFragment : Fragment() {
     var _binding: FragmentSearchBinding? = null
     val binding: FragmentSearchBinding get() = _binding!!
+
+    /**
+     * Araması yapılan text tutulur
+     * */
     private var searchText: String? = null
 
     private val recentSearchListAdapter: RecentSearchListAdapter by lazy { RecentSearchListAdapter() }
@@ -58,7 +61,7 @@ class SearchFragment : Fragment() {
      * @param limit En son arananlar listesinde kaç kelime listelenecek
      **/
     private fun getRecentSearchList() {
-        recentSearchViewModel.getRecentSearchLocal(5)
+        recentSearchViewModel.getRecentSearchLocal(5, RecentSearchType.REPOSITORY.type)
     }
 
     private fun subscribeObservers() {
@@ -68,21 +71,21 @@ class SearchFragment : Fragment() {
                     viewLifecycleOwner,
                     error = {},
                     loading = {},
-                    success = { response ->
-                        response?.let {
-                            searchText?.let { st ->
-                                /**
-                                 * Veritabanında aranan kelime varsa başarılı şekilde silindiğinde
-                                 * Bir silme işlemi gerçekleşmesi gerekmediğinde bu adımdan devam eder.
-                                 * Aranan kelime detay ekranına geçmeden önce veritabanına eklenir.
-                                 * */
-                                recentSearchViewModel.insertRecentSearch(
-                                    RecentSearchModel(0, st, "Repository")
-                                )
-                            }
-                        }
-                    },
+                    success = {},
                     finally = {
+                        searchText?.let { st ->
+                            /**
+                             * Veritabanında aranan kelime varsa başarılı şekilde silindiğinde
+                             * Veya bir silme işlemi gerçekleşmesi gerekmediğinde bu adımda
+                             * Olağan dışı şekilde silme işleminin hata dönmesi durumunda
+                             * Aranan kelime detay ekranına geçmeden önce veritabanına eklenir.
+                             * Bunun amacı programın search işlemine devam etmesi isteniyor
+                             * Son aramalarım programın ana akısını bozmamalı
+                             * */
+                            recentSearchViewModel.insertRecentSearch(
+                                RecentSearchModel(0, st, RecentSearchType.REPOSITORY.type)
+                            )
+                        }
                         clearDeleteRecentSearchWithWordTextResponse()
                     })
 
@@ -103,15 +106,16 @@ class SearchFragment : Fragment() {
                     viewLifecycleOwner,
                     error = {},
                     loading = {},
-                    success = {
+                    success = { },
+                    finally = {
                         /**
-                         * Aranan kelime veritabanına eklendikten sonra detay ekranına yönlendirme sağlanır.
+                         * Aranan kelime veritabanına eklendikten sonra veya
+                         * ekleme işlemi başarısız bile olsa detay ekranına yönlendirme sağlanır.
                          **/
                         searchText?.let { it1 -> navigateSearchRepositoryFragmenment(it1) }
-                    },
-                    finally = {
                         clearInsertRecentSearchResponse()
                     })
+
                 getRecentSearchLocalResponse.observeCall(requireActivity(),
                     viewLifecycleOwner,
                     error = {
@@ -139,13 +143,17 @@ class SearchFragment : Fragment() {
         }
     }
 
-    private fun recentSearchListControl(){
+    /**
+     * Eğer son arananlar listesi dolu liste liste gösterilecek, clear alanı gösterilecek
+     * Eğer liste boş ise empty tasarımı gösterilecek, liste ve clear alanı gizlenecek
+     * */
+    private fun recentSearchListControl() {
         binding.apply {
-            if (recentSearchListAdapter.list.isNotEmpty()){
+            if (recentSearchListAdapter.list.isNotEmpty()) {
                 clRecentSearch.show()
                 rvRecentSearch.show()
                 clEmptyList.remove()
-            }else {
+            } else {
                 clRecentSearch.remove()
                 rvRecentSearch.remove()
                 clEmptyList.show()
@@ -164,6 +172,7 @@ class SearchFragment : Fragment() {
         binding.apply {
             ivClear.setOnClickListener {
                 etSearch.setText("")
+                searchText = null
             }
 
             ivBack.setOnClickListener {
@@ -172,9 +181,10 @@ class SearchFragment : Fragment() {
             }
 
             tvClear.setOnClickListener {
-                recentSearchViewModel.deleteAllText()
+                recentSearchViewModel.deleteAllText(RecentSearchType.REPOSITORY.type)
             }
         }
+
         recentSearchListAdapter.setOnClickListener { item, position ->
             item.word?.let {
                 searchText = it
@@ -182,7 +192,9 @@ class SearchFragment : Fragment() {
                 /**
                  * Daha önce aynı kelime arandığından dolayı veritabanını verimli kullanmak için aranan kelime db'den silinir.
                  * */
-                recentSearchViewModel.deleteRecentSearchWithWordText(it)
+                recentSearchViewModel.deleteRecentSearchWithWordText(
+                    it, RecentSearchType.REPOSITORY.type
+                )
             }
         }
     }
@@ -196,7 +208,9 @@ class SearchFragment : Fragment() {
                     /**
                      * Daha önce aynı kelime aranmıs olabilir. Veritabanını verimli kullanmak için aranan kelime varsa db'den silinir.
                      * */
-                    recentSearchViewModel.deleteRecentSearchWithWordText(searchText!!)
+                    recentSearchViewModel.deleteRecentSearchWithWordText(
+                        searchText!!, RecentSearchType.REPOSITORY.type
+                    )
                     return@OnEditorActionListener true
                 }
                 false

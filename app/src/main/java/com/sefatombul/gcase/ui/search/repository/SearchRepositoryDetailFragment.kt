@@ -1,4 +1,4 @@
-package com.sefatombul.gcase.ui.search
+package com.sefatombul.gcase.ui.search.repository
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -6,12 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import com.sefatombul.gcase.R
 import com.sefatombul.gcase.data.model.search.GetRepositoryResponseModel
-import com.sefatombul.gcase.databinding.FragmentRepositoryDetailBinding
-import com.sefatombul.gcase.databinding.FragmentSearchBinding
 import com.sefatombul.gcase.databinding.FragmentSearchRepositoryDetailBinding
-import com.sefatombul.gcase.databinding.FragmentSearchRepositoryListBinding
 import com.sefatombul.gcase.ui.MainActivity
 import com.sefatombul.gcase.utils.*
 import com.sefatombul.gcase.viewmodels.SearchViewModel
@@ -23,8 +19,18 @@ class SearchRepositoryDetailFragment : Fragment() {
     val binding: FragmentSearchRepositoryDetailBinding get() = _binding!!
     val searchViewModel: SearchViewModel by viewModels()
 
+    /**
+     * Detay bilgisi alınmak istenen repositorinin hangi kullanıcıya ait olduğu bilgisi
+     * */
     private var user: String? = null
+
+    /**
+     * Detay bilgisi alınmak istenen repositorinin ismi
+     * */
     private var repoName: String? = null
+    /**
+     * Repository detayı için tutulan obje
+     * */
     private var model: GetRepositoryResponseModel? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -80,28 +86,36 @@ class SearchRepositoryDetailFragment : Fragment() {
                 )
                 tvUserName.text = item.owner?.login
                 tvRepositoryName.text = item.name
+                tvStarCount.text = numberShortText(item.stargazersCount ?: 0)
+                tvForkCount.text = numberShortText(item.forksCount ?: 0)
+                tvBranch.text = item.defaultBranch
+                tvOpenIssuesCount.text = numberShortText(item.openIssuesCount ?: 0)
+                tvWatcherCount.text = numberShortText(item.subscribersCount ?: 0)
+
+                /**
+                 * Description bilgisi null ise tasarımda ayrılmıs olan alan gizlenir.
+                 * Description bilgisi null değil ise bilgi ilgili alana yazılır
+                 * */
                 if (item.description == null) {
                     tvRepositoryDesc.remove()
                 } else {
                     tvRepositoryDesc.text = item.description
                 }
+                /**
+                 * Homepage url bilgisi null ise tasarımda ayrılmıs olan alan gizlenir.
+                 * Homepage url bilgisi null değil ise bilgi ilgili alana yazılır
+                 * */
                 if (item.homepage.isNullOrBlank()) {
                     clHomeUrl.remove()
                 } else {
                     clHomeUrl.show()
                     tvUrl.text = item.homepage
                 }
-
-                tvStarCount.text = numberShortText(item.stargazersCount ?: 0)
-                tvForkCount.text = numberShortText(item.forksCount ?: 0)
                 if (item.fork == true) {
                     clFromFork.show()
                 } else {
                     clFromFork.remove()
                 }
-                tvBranch.text = item.defaultBranch
-                tvOpenIssuesCount.text = numberShortText(item.openIssuesCount ?: 0)
-                tvWatcherCount.text = numberShortText(item.subscribersCount ?: 0)
                 if (item.license != null) {
                     tvLicenseCount.text = item.license?.spdxId
                 } else {

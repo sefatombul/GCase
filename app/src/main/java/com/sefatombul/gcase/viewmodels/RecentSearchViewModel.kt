@@ -51,14 +51,14 @@ class RecentSearchViewModel @Inject constructor(
         _deleteRecentSearchWithWordTextResponse.postValue(null)
     }
 
-    fun deleteRecentSearchWithWordText(word: String) = viewModelScope.launch {
-        deleteRecentSearchWithWordTextSafeCall(word)
+    fun deleteRecentSearchWithWordText(word: String, type: String) = viewModelScope.launch {
+        deleteRecentSearchWithWordTextSafeCall(word, type)
     }
 
-    private suspend fun deleteRecentSearchWithWordTextSafeCall(word: String) {
+    private suspend fun deleteRecentSearchWithWordTextSafeCall(word: String, type: String) {
         _deleteRecentSearchWithWordTextResponse.postValue(Resource.Loading())
         _deleteRecentSearchWithWordTextResponse.postValue(globalSafeCallDB(getApplication()) {
-            recentSearchRepository.deleteRecentSearchWithWordText(word)
+            recentSearchRepository.deleteRecentSearchWithWordText(word, type)
         })
     }
 
@@ -73,25 +73,25 @@ class RecentSearchViewModel @Inject constructor(
         })
     }
 
-    fun getRecentSearchLocal(limit: Int) = viewModelScope.launch {
-        getRecentSearchLocalSafeCall(limit)
+    fun getRecentSearchLocal(limit: Int, type: String) = viewModelScope.launch {
+        getRecentSearchLocalSafeCall(limit, type)
     }
 
-    private suspend fun getRecentSearchLocalSafeCall(limit: Int) {
+    private suspend fun getRecentSearchLocalSafeCall(limit: Int, type: String) {
         _getRecentSearchLocalResponse.postValue(Resource.Loading())
         _getRecentSearchLocalResponse.postValue(globalSafeCallDB(getApplication()) {
-            recentSearchRepository.getRecentSearchLocal(limit)
+            recentSearchRepository.getRecentSearchLocal(limit, type)
         })
     }
 
-    fun deleteAllText() = viewModelScope.launch {
-        deleteAllTextSafeCall()
+    fun deleteAllText(type: String) = viewModelScope.launch {
+        deleteAllTextSafeCall(type)
     }
 
-    private suspend fun deleteAllTextSafeCall( ) {
+    private suspend fun deleteAllTextSafeCall(type: String) {
         _deleteAllTextResponse.postValue(Resource.Loading())
         _deleteAllTextResponse.postValue(globalSafeCallDB(getApplication()) {
-            recentSearchRepository.deleteAllText()
+            recentSearchRepository.deleteAllText(type)
         })
     }
 

@@ -63,7 +63,7 @@
         tools:layout="@layout/fragment_repository_detail" />
     <fragment
         android:id="@+id/searchFragment"
-        android:name="com.sefatombul.gcase.ui.search.SearchFragment"
+        android:name="com.sefatombul.gcase.ui.search.repository.RepositorySearchFragment"
         android:label="SearchFragment" >
         <action
             android:id="@+id/action_searchFragment_to_searchRepositoryListFragment"
@@ -71,11 +71,11 @@
     </fragment>
     <fragment
         android:id="@+id/searchRepositoryDetailFragment"
-        android:name="com.sefatombul.gcase.ui.search.SearchRepositoryDetailFragment"
+        android:name="com.sefatombul.gcase.ui.search.repository.SearchRepositoryDetailFragment"
         android:label="SearchRepositoryDetailFragment" />
     <fragment
         android:id="@+id/searchRepositoryListFragment"
-        android:name="com.sefatombul.gcase.ui.search.SearchRepositoryListFragment"
+        android:name="com.sefatombul.gcase.ui.search.repository.SearchRepositoryListFragment"
         android:label="SearchRepositoryListFragment" >
         <action
             android:id="@+id/action_searchRepositoryListFragment_to_searchRepositoryDetailFragment"
