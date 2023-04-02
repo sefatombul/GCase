@@ -135,7 +135,7 @@
                 android:id="@+id/mcvStarredRepositories"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:cardBackgroundColor="@color/arsenic"
+                app:cardBackgroundColor="@color/sunglow"
                 app:cardCornerRadius="5dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -145,7 +145,7 @@
                     android:layout_width="12dp"
                     android:layout_height="12dp"
                     android:layout_margin="10dp"
-                    android:src="@drawable/git_repo"
+                    android:src="@drawable/baseline_star_outline_24"
                     app:tint="@color/white" />
 
             </com.google.android.material.card.MaterialCardView>
@@ -219,7 +219,7 @@
                 android:id="@+id/mcvSearchRepository"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:cardBackgroundColor="@color/arsenic"
+                app:cardBackgroundColor="@color/ufo_green"
                 app:cardCornerRadius="5dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -263,7 +263,7 @@
                 android:id="@+id/mcvSearchPerson"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:cardBackgroundColor="@color/arsenic"
+                app:cardBackgroundColor="@color/spanish_orange"
                 app:cardCornerRadius="5dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -273,7 +273,7 @@
                     android:layout_width="12dp"
                     android:layout_height="12dp"
                     android:layout_margin="10dp"
-                    android:src="@drawable/git_repo"
+                    android:src="@drawable/baseline_person_24"
                     app:tint="@color/white" />
 
             </com.google.android.material.card.MaterialCardView>
@@ -307,7 +307,7 @@
                 android:id="@+id/mcvSearchOrganization"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:cardBackgroundColor="@color/arsenic"
+                app:cardBackgroundColor="@color/sunglow"
                 app:cardCornerRadius="5dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -317,7 +317,7 @@
                     android:layout_width="12dp"
                     android:layout_height="12dp"
                     android:layout_margin="10dp"
-                    android:src="@drawable/git_repo"
+                    android:src="@drawable/company"
                     app:tint="@color/white" />
 
             </com.google.android.material.card.MaterialCardView>
