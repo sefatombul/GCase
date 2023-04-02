@@ -1,24 +1,35 @@
 package com.sefatombul.gcase.ui.search
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.widget.TextView.OnEditorActionListener
+import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.sefatombul.gcase.R
-import com.sefatombul.gcase.databinding.FragmentRepositoryListBinding
+import com.sefatombul.gcase.adapters.RecentSearchListAdapter
+import com.sefatombul.gcase.data.local.RecentSearchModel
 import com.sefatombul.gcase.databinding.FragmentSearchBinding
 import com.sefatombul.gcase.ui.MainActivity
-import com.sefatombul.gcase.utils.remove
-import com.sefatombul.gcase.utils.show
-import com.sefatombul.gcase.viewmodels.RepositoryViewModel
+import com.sefatombul.gcase.utils.*
+import com.sefatombul.gcase.viewmodels.RecentSearchViewModel
+import com.sefatombul.gcase.viewmodels.SearchViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+
+@AndroidEntryPoint
 class SearchFragment : Fragment() {
     var _binding: FragmentSearchBinding? = null
     val binding: FragmentSearchBinding get() = _binding!!
+    private var searchText: String? = null
 
+    private val recentSearchListAdapter: RecentSearchListAdapter by lazy { RecentSearchListAdapter() }
+    val recentSearchViewModel: RecentSearchViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -33,17 +44,185 @@ class SearchFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         (requireActivity() as? MainActivity)?.hideBottomNavigation()
         edittextSetup()
+        setupRecyclerview()
+        handleCLickEventsListener()
+        subscribeObservers()
+        getRecentSearchList()
+
+    }
+
+    /**
+     * Son arananlar listesi için veriler local db'den alındı.
+     * @author Sefa TOMBUL
+     * @since 02/04/2023
+     * @param limit En son arananlar listesinde kaç kelime listelenecek
+     **/
+    private fun getRecentSearchList() {
+        recentSearchViewModel.getRecentSearchLocal(5)
+    }
+
+    private fun subscribeObservers() {
+        binding.apply {
+            recentSearchViewModel.apply {
+                deleteRecentSearchWithWordTextResponse.observeCall(requireActivity(),
+                    viewLifecycleOwner,
+                    error = {},
+                    loading = {},
+                    success = { response ->
+                        response?.let {
+                            searchText?.let { st ->
+                                /**
+                                 * Veritabanında aranan kelime varsa başarılı şekilde silindiğinde
+                                 * Bir silme işlemi gerçekleşmesi gerekmediğinde bu adımdan devam eder.
+                                 * Aranan kelime detay ekranına geçmeden önce veritabanına eklenir.
+                                 * */
+                                recentSearchViewModel.insertRecentSearch(
+                                    RecentSearchModel(0, st, "Repository")
+                                )
+                            }
+                        }
+                    },
+                    finally = {
+                        clearDeleteRecentSearchWithWordTextResponse()
+                    })
+
+                deleteAllTextResponse.observeCall(requireActivity(),
+                    viewLifecycleOwner,
+                    error = {},
+                    loading = {},
+                    success = { response ->
+                        response?.let {
+                            getRecentSearchList()
+                        }
+                    },
+                    finally = {
+                        clearDeleteAllTextResponseResponse()
+                    })
+
+                insertRecentSearchResponse.observeCall(requireActivity(),
+                    viewLifecycleOwner,
+                    error = {},
+                    loading = {},
+                    success = {
+                        /**
+                         * Aranan kelime veritabanına eklendikten sonra detay ekranına yönlendirme sağlanır.
+                         **/
+                        searchText?.let { it1 -> navigateSearchRepositoryFragmenment(it1) }
+                    },
+                    finally = {
+                        clearInsertRecentSearchResponse()
+                    })
+                getRecentSearchLocalResponse.observeCall(requireActivity(),
+                    viewLifecycleOwner,
+                    error = {
+                        /**
+                         * Bir hata ile karşılaşıldığında recentSearch listesi boş olarak güncellenir.
+                         * */
+                        recentSearchListAdapter.set(arrayListOf())
+                    },
+                    loading = {},
+                    success = { response ->
+                        /**
+                         * recentSearch listesi güncellenir.
+                         * */
+                        response?.let { list ->
+                            recentSearchListAdapter.set(arrayListOf(*list.toTypedArray()))
+                        } ?: run {
+                            recentSearchListAdapter.set(arrayListOf())
+                        }
+                    },
+                    finally = {
+                        clearGetRecentSearchLocalResponse()
+                        recentSearchListControl()
+                    })
+            }
+        }
+    }
+
+    private fun recentSearchListControl(){
+        binding.apply {
+            if (recentSearchListAdapter.list.isNotEmpty()){
+                clRecentSearch.show()
+                rvRecentSearch.show()
+                clEmptyList.remove()
+            }else {
+                clRecentSearch.remove()
+                rvRecentSearch.remove()
+                clEmptyList.show()
+            }
+        }
+    }
+
+    private fun setupRecyclerview() {
+        binding.apply {
+            rvRecentSearch.adapter = recentSearchListAdapter
+        }
+    }
+
+
+    private fun handleCLickEventsListener() {
+        binding.apply {
+            ivClear.setOnClickListener {
+                etSearch.setText("")
+            }
+
+            ivBack.setOnClickListener {
+                binding.etSearch.hideKeyboard()
+                findNavController().backStackCustom()
+            }
+
+            tvClear.setOnClickListener {
+                recentSearchViewModel.deleteAllText()
+            }
+        }
+        recentSearchListAdapter.setOnClickListener { item, position ->
+            item.word?.let {
+                searchText = it
+                binding.etSearch.hideKeyboard()
+                /**
+                 * Daha önce aynı kelime arandığından dolayı veritabanını verimli kullanmak için aranan kelime db'den silinir.
+                 * */
+                recentSearchViewModel.deleteRecentSearchWithWordText(it)
+            }
+        }
     }
 
     private fun edittextSetup() {
         binding.apply {
-            etSearch.addTextChangedListener { text ->
+            etSearch.setOnEditorActionListener(OnEditorActionListener { v, actionId, event ->
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    etSearch.hideKeyboard()
+                    searchText = etSearch.text.toString()
+                    /**
+                     * Daha önce aynı kelime aranmıs olabilir. Veritabanını verimli kullanmak için aranan kelime varsa db'den silinir.
+                     * */
+                    recentSearchViewModel.deleteRecentSearchWithWordText(searchText!!)
+                    return@OnEditorActionListener true
+                }
+                false
+            })
+
+            etSearch.addTextChangedListener {
                 if (etSearch.text.isNotEmpty()) {
                     ivClear.show()
                 } else {
                     ivClear.remove()
                 }
             }
+
+            searchText = null
+            etSearch.setText("")
+            etSearch.requestFocus()
+            etSearch.showKeyboard()
         }
+    }
+
+    private fun navigateSearchRepositoryFragmenment(text: String) {
+        val bundle = Bundle().apply {
+            putString(Constants.SEARCH_KEY_BUNDLE, text)
+        }
+        findNavController().safeNavigate(
+            R.id.action_searchFragment_to_searchRepositoryListFragment, bundle
+        )
     }
 }

@@ -1,7 +1,12 @@
 package com.sefatombul.gcase.utils
 
 object Constants {
+    const val RECENT_SEARCH_TABLE_NAME = "RECENT_SEARCH_TABLE"
+    const val DATABASE_NAME = "com.sefatombul.gcase.Room"
 
+    const val REPOSITORY_NAME = "REPOSITORY_NAME"
+    const val REPOSITORY_USER = "REPOSITORY_USER"
+    const val SEARCH_KEY_BUNDLE = "SEARCH_KEY_BUNDLE"
     const val PREFERENCES_NAME = "gcase_preference"
 
     const val ACCESS_TOKEN_URL = "https://wooglet.com/callback.txt"

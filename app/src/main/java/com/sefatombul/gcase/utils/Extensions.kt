@@ -32,6 +32,7 @@ import timber.log.Timber
 import java.net.ConnectException
 import java.nio.charset.StandardCharsets
 import java.util.*
+import kotlin.math.roundToInt
 
 fun convertBase64(text: String): String {
     return Base64.getEncoder().encodeToString(
@@ -91,6 +92,23 @@ fun <T> LiveData<Resource<T>?>.observeCall(
             else -> {}
         }
     }
+}
+
+
+suspend fun <T> globalSafeCallDB(
+    context: Context,
+    f: suspend () -> T
+): Resource<T>? {
+    var res: Resource<T>? = null
+    try {
+        val response = f()
+        res = DatabaseHelper.handleResponse(response)
+    } catch (e: Exception) {
+        res = Resource.Error(Constants.UNKNOWN_ERROR)
+        Timber.e("Database Resource.Error(Constants.UNKNOWN_ERROR)")
+        e.printStackTrace()
+    }
+    return res
 }
 
 suspend fun <T> globalSafeCall(
@@ -375,5 +393,23 @@ fun NavController.safeNavigate(@IdRes direction: Int, bundle: Bundle? = null) {
             Timber.e("SafeNavigate - not found direction (action or id)")
             e.printStackTrace()
         }
+    }
+}
+
+fun numberShortText(number: Int): String {
+    if (number < 1000) {
+        return "$number"
+    } else if (number < 1000000) {
+        val d = number.toDouble() / 100.0
+        val i = d.roundToInt()
+        return "${i.toDouble() / 10.0}k"
+    } else if (number < 1000000000) {
+        val d = number.toDouble() / 100_000.0
+        val i = d.roundToInt()
+        return "${i.toDouble() / 10.0}M"
+    }else  {
+        val d = number.toDouble() / 100_000_000.0
+        val i = d.roundToInt()
+        return "${i.toDouble() / 10.0}B"
     }
 }

@@ -3,11 +3,15 @@ package com.sefatombul.gcase.di
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Environment
+import androidx.room.Room
+import androidx.room.RoomDatabase
 import com.sefatombul.gcase.data.remote.ApiService
 import com.sefatombul.gcase.data.remote.auth.AuthService
 import com.sefatombul.gcase.data.remote.auth.WoogletService
+import com.sefatombul.gcase.db.AppDatabase
 import com.sefatombul.gcase.utils.Constants
 import com.sefatombul.gcase.utils.Constants.CACHE_MAX_SIZE
+import com.sefatombul.gcase.utils.Constants.DATABASE_NAME
 import com.sefatombul.gcase.utils.PreferencesRepository
 import dagger.Module
 import dagger.Provides
@@ -20,6 +24,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
+import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
@@ -143,5 +148,25 @@ object AppModule {
         return retrofit.create(ApiService::class.java)
     }
 
+    @Singleton
+    @Provides
+    fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase {
+        val dbBuilder = Room.databaseBuilder(
+            context,
+            AppDatabase::class.java,
+            DATABASE_NAME
+        )
+        dbBuilder.setQueryCallback(object  : RoomDatabase.QueryCallback{
+            override fun onQuery(sqlQuery: String, bindArgs: List<Any?>) {
+                println("SQL Query: $sqlQuery SQL Args: $bindArgs")
+            }
+
+        }, Executors.newSingleThreadExecutor())
+        return dbBuilder.build()
+    }
+
+    @Singleton
+    @Provides
+    fun provideRecentSearchDao(db: AppDatabase) = db.getRecentSearchDao()
 
 }
