@@ -1,39 +1,38 @@
-package com.sefatombul.gcase.ui.search.repository
+package com.sefatombul.gcase.ui.search.person
 
 import android.os.Bundle
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sefatombul.gcase.R
-import com.sefatombul.gcase.adapters.search.SearchRepositoryListAdapter
+import com.sefatombul.gcase.adapters.search.SearchPersonListAdapter
+import com.sefatombul.gcase.data.local.UserSearchTypeEnum
 import com.sefatombul.gcase.data.model.search.Sort
-import com.sefatombul.gcase.databinding.FragmentSearchRepositoryListBinding
+import com.sefatombul.gcase.databinding.FragmentSearchPersonListBinding
 import com.sefatombul.gcase.ui.MainActivity
 import com.sefatombul.gcase.ui.search.sort.SortBottomSheetFragment
 import com.sefatombul.gcase.utils.*
 import com.sefatombul.gcase.viewmodels.SearchViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
-
 @AndroidEntryPoint
-class SearchRepositoryListFragment : Fragment() {
-    var _binding: FragmentSearchRepositoryListBinding? = null
-    val binding: FragmentSearchRepositoryListBinding get() = _binding!!
+class SearchPersonListFragment : Fragment() {
+    var _binding: FragmentSearchPersonListBinding? = null
+    val binding: FragmentSearchPersonListBinding get() = _binding!!
 
     val sortBottomSheet: SortBottomSheetFragment by lazy { SortBottomSheetFragment() }
     var sort: Sort = Sort("Best Match", null, true)
     var order: Sort = Sort("Highest number of matches", "desc", true)
 
     /**
-     * Search Repository List ekranı ilk defa acıldıysa false değerini alır.
+     * Search Person List ekranı ilk defa acıldıysa false değerini alır.
      * Bir sonraki fragmentta geri gelinme işlemi yapıldıysa true değerini alır
      * */
     var isPopBackStack = false
@@ -60,7 +59,7 @@ class SearchRepositoryListFragment : Fragment() {
      * */
     private var searchText: String? = null
 
-    val searchRepositoryListAdapter: SearchRepositoryListAdapter by lazy { SearchRepositoryListAdapter() }
+    private val searchPersonListAdapter: SearchPersonListAdapter by lazy { SearchPersonListAdapter() }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         handleArguments()
@@ -76,7 +75,7 @@ class SearchRepositoryListFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         if (_binding == null) {
-            _binding = FragmentSearchRepositoryListBinding.inflate(
+            _binding = FragmentSearchPersonListBinding.inflate(
                 inflater, container, false
             )
         } else {
@@ -94,17 +93,17 @@ class SearchRepositoryListFragment : Fragment() {
         /**
          * Ekran ilk defa acıldıysa aranan kelime için ilk sayfa bilgisi alınır
          * */
-        if (!isPopBackStack) performRepositorySearch()
+        if (!isPopBackStack) performPersonSearch()
     }
 
     private fun showSortBottomSheet() {
         val sortList = arrayListOf(
             Sort("Best Match", null, false),
-            Sort("Stars", "stars", false),
-            Sort("Forks", "forks", false),
-            Sort("Help Wanted Issues", "help-wanted-issues", false),
-            Sort("Updated", "updated", false),
+            Sort("Followers", "followers", false),
+            Sort("Repositories", "repositories", false),
+            Sort("Joined", "joined", false),
         )
+
         sortList.forEach { item ->
             if (item.key == sort.key) {
                 item.isChecked = true
@@ -136,7 +135,7 @@ class SearchRepositoryListFragment : Fragment() {
             if (orderSelected != null) {
                 order = orderSelected
             }
-            performRepositorySearch()
+            performPersonSearch()
         }
 
         if (!sortBottomSheet.isAdded) {
@@ -154,15 +153,13 @@ class SearchRepositoryListFragment : Fragment() {
             ivSort.setOnClickListener {
                 showSortBottomSheet()
             }
-            searchRepositoryListAdapter.apply {
+            searchPersonListAdapter.apply {
                 setOnClickListener { item, position ->
                     val bundle = Bundle().apply {
-                        putString(Constants.REPOSITORY_USER, item.owner?.login)
-                        putString(Constants.REPOSITORY_NAME, item.name)
+                        putString(Constants.USER_BUNDLE_KEY, item.login)
                     }
                     findNavController().navigate(
-                        R.id.action_searchRepositoryListFragment_to_searchRepositoryDetailFragment,
-                        bundle
+                        R.id.action_searchPersonListFragment_to_searchPersonDetailFragment, bundle
                     )
                 }
             }
@@ -171,15 +168,15 @@ class SearchRepositoryListFragment : Fragment() {
 
     private fun recyclerviewSetup() {
         binding.apply {
-            rvRepositories.adapter = searchRepositoryListAdapter
-            val layoutManager = rvRepositories.layoutManager as LinearLayoutManager
+            rvPerson.adapter = searchPersonListAdapter
+            val layoutManager = rvPerson.layoutManager as LinearLayoutManager
             ContextCompat.getDrawable(requireContext(), R.drawable.divider)?.let {
                 val itemDecorator = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
                 itemDecorator.setDrawable(it)
-                rvRepositories.addItemDecoration(itemDecorator)
+                rvPerson.addItemDecoration(itemDecorator)
             }
 
-            rvRepositories.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            rvPerson.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
                     setupRecyclerViewPagination(layoutManager)
@@ -195,35 +192,36 @@ class SearchRepositoryListFragment : Fragment() {
             val endHasBeenReached = lastVisible + 10 >= totalItemCount
 
             if (totalItemCount > 0 && endHasBeenReached) {
-                if (searchRepositoryListAdapter.list.size < total && page * pageSize < total && searchRepositoryListAdapter.list.size >= page * pageSize) {
+                if (searchPersonListAdapter.list.size < total && page * pageSize < total && searchPersonListAdapter.list.size >= page * pageSize) {
                     page += 1
-                    performRepositorySearch()
+                    performPersonSearch()
                 }
             }
         }
     }
 
-    private fun performRepositorySearch() {
+    private fun performPersonSearch() {
         binding.apply {
             if (!searchText.isNullOrBlank()) {
-                searchViewModel.searchRepository(
+                searchViewModel.searchUser(
                     searchText = searchText!!,
                     pageSize = pageSize,
                     page = page,
                     sort = sort.key,
-                    order = order.key ?: "desc"
+                    order = order.key ?: "desc",
+                    type = UserSearchTypeEnum.USER.type
                 )
             }
         }
     }
 
     /**
-     * Repository listesi boş ise empty text görünür olacak
+     * Person listesi boş ise empty text görünür olacak
      * liste dolu ise empty text gizlenecek
      * */
-    private fun repositoryListControl() {
+    private fun personListControl() {
         binding.apply {
-            if (searchRepositoryListAdapter.list.isNullOrEmpty()) {
+            if (searchPersonListAdapter.list.isNullOrEmpty()) {
                 tvNothingSee.show()
             } else {
                 tvNothingSee.remove()
@@ -233,7 +231,7 @@ class SearchRepositoryListFragment : Fragment() {
 
     private fun subscribeObversers() {
         searchViewModel.apply {
-            searchRepositoryResponse.observeCall(requireActivity(),
+            searchUserResponse.observeCall(requireActivity(),
                 viewLifecycleOwner,
                 error = {},
                 loading = {
@@ -253,22 +251,22 @@ class SearchRepositoryListFragment : Fragment() {
                             /**
                              * Adaptör listesi temizlenir gelen veriler temiz liste üzerine verilir
                              * */
-                            searchRepositoryListAdapter.setList(result.items)
+                            searchPersonListAdapter.setList(result.items)
                         } else if (page > 1) {
                             /**
                              * Adaptör listesi temizlenmez. Sayfalama işlemi sonucudur
                              * Gelen veriler var olan listenin üzerine eklenir
                              * */
-                            searchRepositoryListAdapter.addList(result.items)
+                            searchPersonListAdapter.addList(result.items)
                         }
                     }
                 },
                 finally = {
-                    clearSearchRepositoryResponse()
+                    clearSearchUserResponse()
                     if (page == 1) {
                         (requireActivity() as? MainActivity)?.hideLoading()
                     }
-                    repositoryListControl()
+                    personListControl()
                 })
         }
     }

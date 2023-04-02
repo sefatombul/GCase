@@ -1,11 +1,11 @@
-package com.sefatombul.gcase.ui.search.repository
+package com.sefatombul.gcase.ui.search.organization
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.widget.TextView.OnEditorActionListener
+import android.widget.TextView
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -14,17 +14,16 @@ import com.sefatombul.gcase.R
 import com.sefatombul.gcase.adapters.RecentSearchListAdapter
 import com.sefatombul.gcase.data.local.RecentSearchModel
 import com.sefatombul.gcase.data.local.RecentSearchType
-import com.sefatombul.gcase.databinding.FragmentSearchBinding
+import com.sefatombul.gcase.databinding.FragmentOrganizationSearchBinding
 import com.sefatombul.gcase.ui.MainActivity
 import com.sefatombul.gcase.utils.*
 import com.sefatombul.gcase.viewmodels.RecentSearchViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
-
 @AndroidEntryPoint
-class RepositorySearchFragment : Fragment() {
-    var _binding: FragmentSearchBinding? = null
-    val binding: FragmentSearchBinding get() = _binding!!
+class OrganizationSearchFragment : Fragment() {
+    var _binding: FragmentOrganizationSearchBinding? = null
+    val binding: FragmentOrganizationSearchBinding get() = _binding!!
 
     /**
      * Araması yapılan text tutulur
@@ -37,7 +36,7 @@ class RepositorySearchFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentSearchBinding.inflate(
+        _binding = FragmentOrganizationSearchBinding.inflate(
             inflater, container, false
         )
         return binding.root
@@ -61,7 +60,7 @@ class RepositorySearchFragment : Fragment() {
      * @param limit En son arananlar listesinde kaç kelime listelenecek
      **/
     private fun getRecentSearchList() {
-        recentSearchViewModel.getRecentSearchLocal(5, RecentSearchType.REPOSITORY.type)
+        recentSearchViewModel.getRecentSearchLocal(5, RecentSearchType.ORGANIZATION.type)
     }
 
     private fun subscribeObservers() {
@@ -83,7 +82,7 @@ class RepositorySearchFragment : Fragment() {
                              * Son aramalarım programın ana akısını bozmamalı
                              * */
                             recentSearchViewModel.insertRecentSearch(
-                                RecentSearchModel(0, st, RecentSearchType.REPOSITORY.type)
+                                RecentSearchModel(0, st, RecentSearchType.ORGANIZATION.type)
                             )
                         }
                         clearDeleteRecentSearchWithWordTextResponse()
@@ -112,7 +111,7 @@ class RepositorySearchFragment : Fragment() {
                          * Aranan kelime veritabanına eklendikten sonra veya
                          * ekleme işlemi başarısız bile olsa detay ekranına yönlendirme sağlanır.
                          **/
-                        searchText?.let { it1 -> navigateSearchRepositoryFragmenment(it1) }
+                        searchText?.let { it1 -> navigateSearchOrganizationListFragmenment(it1) }
                         clearInsertRecentSearchResponse()
                     })
 
@@ -181,7 +180,7 @@ class RepositorySearchFragment : Fragment() {
             }
 
             tvClear.setOnClickListener {
-                recentSearchViewModel.deleteAllText(RecentSearchType.REPOSITORY.type)
+                recentSearchViewModel.deleteAllText(RecentSearchType.ORGANIZATION.type)
             }
         }
 
@@ -200,14 +199,14 @@ class RepositorySearchFragment : Fragment() {
              * Daha önce aynı kelime arandığından dolayı veritabanını verimli kullanmak için aranan kelime db'den silinir.
              * */
             recentSearchViewModel.deleteRecentSearchWithWordText(
-                text, RecentSearchType.REPOSITORY.type
+                text, RecentSearchType.ORGANIZATION.type
             )
         }
     }
 
     private fun edittextSetup() {
         binding.apply {
-            etSearch.setOnEditorActionListener(OnEditorActionListener { v, actionId, event ->
+            etSearch.setOnEditorActionListener(TextView.OnEditorActionListener { v, actionId, event ->
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     handleRecentSearch(etSearch.text.toString())
                     return@OnEditorActionListener true
@@ -230,12 +229,12 @@ class RepositorySearchFragment : Fragment() {
         }
     }
 
-    private fun navigateSearchRepositoryFragmenment(text: String) {
+    private fun navigateSearchOrganizationListFragmenment(text: String) {
         val bundle = Bundle().apply {
             putString(Constants.SEARCH_KEY_BUNDLE, text)
         }
         findNavController().safeNavigate(
-            R.id.action_searchFragment_to_searchRepositoryListFragment, bundle
+            R.id.action_organizationSearchFragment_to_searchOrganizationListFragment, bundle
         )
     }
 }

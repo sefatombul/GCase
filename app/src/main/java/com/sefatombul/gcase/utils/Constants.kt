@@ -6,6 +6,7 @@ object Constants {
 
     const val REPOSITORY_NAME = "REPOSITORY_NAME"
     const val REPOSITORY_USER = "REPOSITORY_USER"
+    const val USER_BUNDLE_KEY = "USER_BUNDLE_KEY"
     const val SEARCH_KEY_BUNDLE = "SEARCH_KEY_BUNDLE"
     const val PREFERENCES_NAME = "gcase_preference"
 

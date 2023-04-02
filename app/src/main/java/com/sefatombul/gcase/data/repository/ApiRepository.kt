@@ -24,6 +24,23 @@ class ApiRepository @Inject constructor(
         )
     }
 
-
     suspend fun getRepository(owner: String, repo: String) = apiService.getRepository(owner, repo)
+    suspend fun searchUser(
+        q: String,
+        pageSize: Int,
+        page: Int,
+        sort: String? = null,
+        order: String = "desc",
+        type: String
+    ) = if (sort != null) {
+        apiService.searchUser(
+            "$q type:$type", pageSize, page, sort, order
+        )
+    } else {
+        apiService.searchUser(
+            "$q type:$type", pageSize, page
+        )
+    }
+
+    suspend fun getUser(owner: String) = apiService.getUser(owner)
 }

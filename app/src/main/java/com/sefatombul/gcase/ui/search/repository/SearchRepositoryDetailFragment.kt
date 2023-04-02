@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.sefatombul.gcase.data.model.search.GetRepositoryResponseModel
 import com.sefatombul.gcase.databinding.FragmentSearchRepositoryDetailBinding
 import com.sefatombul.gcase.ui.MainActivity
@@ -58,8 +59,17 @@ class SearchRepositoryDetailFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         (requireActivity() as? MainActivity)?.hideBottomNavigation()
         subscribeObversers()
+        handleClickEventsListener()
         getRepository()
     }
+    private fun handleClickEventsListener() {
+        binding.apply {
+            ivBack.setOnClickListener {
+                findNavController().backStackCustom()
+            }
+        }
+    }
+
 
     private fun subscribeObversers() {
         searchViewModel.apply {

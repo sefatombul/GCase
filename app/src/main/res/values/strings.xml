@@ -33,4 +33,13 @@
     <string name="sort">Sort</string>
     <string name="order">Order</string>
     <string name="apply">Apply</string>
+    <string name="search">Search</string>
+    <string name="search_options">Search Options</string>
+    <string name="search_repositories">Search Repositories</string>
+    <string name="search_person">Search Person</string>
+    <string name="person">Person</string>
+    <string name="followers">followers</string>
+    <string name="following">following</string>
+    <string name="follow">FOLLOW</string>
+    <string name="search_organization">Search Organization</string>
 </resources>
