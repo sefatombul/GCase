@@ -1,9 +1,6 @@
 package com.sefatombul.gcase.data.remote
 
-import com.sefatombul.gcase.data.model.search.GetRepositoryResponseModel
-import com.sefatombul.gcase.data.model.search.GetUserResponseModel
-import com.sefatombul.gcase.data.model.search.SearchRepositoryResponseModel
-import com.sefatombul.gcase.data.model.search.SearchUserResponseModel
+import com.sefatombul.gcase.data.model.search.*
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -54,4 +51,7 @@ interface ApiService {
         @Path("owner") owner: String
     ): Response<GetUserResponseModel>
 
+
+    @GET("/user/repos")
+    suspend fun userRepository(): Response<List<Items>>
 }

@@ -17,6 +17,7 @@ import com.sefatombul.gcase.data.local.UserSearchTypeEnum
 import com.sefatombul.gcase.data.model.search.Sort
 import com.sefatombul.gcase.databinding.FragmentSearchOrganizationListBinding
 import com.sefatombul.gcase.ui.MainActivity
+import com.sefatombul.gcase.ui.search.DateRangeBottomSheetFragment
 import com.sefatombul.gcase.ui.search.sort.SortBottomSheetFragment
 import com.sefatombul.gcase.utils.*
 import com.sefatombul.gcase.viewmodels.SearchViewModel
@@ -31,6 +32,9 @@ class SearchOrganizationListFragment : Fragment() {
     val sortBottomSheet: SortBottomSheetFragment by lazy { SortBottomSheetFragment() }
     var sort: Sort = Sort("Best Match", null, true)
     var order: Sort = Sort("Highest number of matches", "desc", true)
+
+    private val dateRangeBottomSheetFragment: DateRangeBottomSheetFragment by lazy { DateRangeBottomSheetFragment() }
+    var dateRange: Sort = Sort("All Time", null, true)
 
     /**
      * Search Organization List ekranı ilk defa acıldıysa false değerini alır.
@@ -97,6 +101,37 @@ class SearchOrganizationListFragment : Fragment() {
         if (!isPopBackStack) performOrganizationSearch()
     }
 
+    private fun showDateRangeBottomSheet() {
+        val dateRangeList = arrayListOf(
+            Sort("Created in the last month", "1", false),
+            Sort("Created in the last 3 month", "3", false),
+            Sort("Created in the last 6 month", "6", false),
+            Sort("Created in the last 1 year", "12", false),
+            Sort("All Time", null, false),
+        )
+        dateRangeList.forEach { item ->
+            if (item.key == dateRange.key) {
+                item.isChecked = true
+            }
+        }
+        dateRangeBottomSheetFragment.setDateRangeList(
+            dateRangeList
+        )
+
+        dateRangeBottomSheetFragment.applySetOnClickListener { dateRangeSelected ->
+            page = 1
+            if (dateRangeSelected != null) {
+                dateRange = dateRangeSelected
+            }
+            performOrganizationSearch()
+        }
+
+        if (!dateRangeBottomSheetFragment.isAdded) {
+            dateRangeBottomSheetFragment.show(
+                requireActivity().supportFragmentManager, "dateRangeBottomSheetFragment"
+            )
+        }
+    }
     private fun showSortBottomSheet() {
         val sortList = arrayListOf(
             Sort("Best Match", null, false),
@@ -154,6 +189,9 @@ class SearchOrganizationListFragment : Fragment() {
             ivSort.setOnClickListener {
                 showSortBottomSheet()
             }
+            ivDate.setOnClickListener {
+                showDateRangeBottomSheet()
+            }
             searchOrganizationListAdapter.apply {
                 setOnClickListener { item, position ->
                     val bundle = Bundle().apply {
@@ -203,6 +241,21 @@ class SearchOrganizationListFragment : Fragment() {
     }
 
     private fun performOrganizationSearch() {
+        var range: String? = null
+        when (dateRange.key) {
+            "1" -> {
+                range = "created:${manipulateDate(TimeUnits.MONTHS, -1)}..${getTodayDate()}"
+            }
+            "3" -> {
+                range = "created:${manipulateDate(TimeUnits.MONTHS, -3)}..${getTodayDate()}"
+            }
+            "6" -> {
+                range = "created:${manipulateDate(TimeUnits.MONTHS, -6)}..${getTodayDate()}"
+            }
+            "12" -> {
+                range = "created:${manipulateDate(TimeUnits.YEARS, -1)}..${getTodayDate()}"
+            }
+        }
         binding.apply {
             if (!searchText.isNullOrBlank()) {
                 searchViewModel.searchUser(
@@ -211,7 +264,8 @@ class SearchOrganizationListFragment : Fragment() {
                     page = page,
                     sort = sort.key,
                     order = order.key ?: "desc",
-                    type = UserSearchTypeEnum.ORGANIZATION.type
+                    type = UserSearchTypeEnum.ORGANIZATION.type,
+                    dateRange = range
                 )
             }
         }

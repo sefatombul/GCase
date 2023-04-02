@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.sefatombul.gcase.R
-import com.sefatombul.gcase.adapters.RecentSearchListAdapter
+import com.sefatombul.gcase.adapters.search.RecentSearchListAdapter
 import com.sefatombul.gcase.data.local.RecentSearchModel
 import com.sefatombul.gcase.data.local.RecentSearchType
 import com.sefatombul.gcase.databinding.FragmentSearchBinding

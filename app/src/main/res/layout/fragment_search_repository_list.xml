@@ -17,8 +17,8 @@
             android:id="@+id/ivBack"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingStart="20dp"
             android:paddingVertical="20dp"
+            android:paddingStart="20dp"
             android:paddingEnd="0dp"
             android:src="@drawable/baseline_arrow_back_24"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -36,6 +36,19 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/ivBack"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/ivDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingVertical="15dp"
+            android:paddingStart="17sp"
+            android:paddingEnd="14dp"
+            android:src="@drawable/date_range"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/ivSort"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/denim" />
 
         <ImageView
             android:id="@+id/ivSort"

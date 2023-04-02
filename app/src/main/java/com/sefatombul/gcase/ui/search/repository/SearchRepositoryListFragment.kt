@@ -17,6 +17,7 @@ import com.sefatombul.gcase.adapters.search.SearchRepositoryListAdapter
 import com.sefatombul.gcase.data.model.search.Sort
 import com.sefatombul.gcase.databinding.FragmentSearchRepositoryListBinding
 import com.sefatombul.gcase.ui.MainActivity
+import com.sefatombul.gcase.ui.search.DateRangeBottomSheetFragment
 import com.sefatombul.gcase.ui.search.sort.SortBottomSheetFragment
 import com.sefatombul.gcase.utils.*
 import com.sefatombul.gcase.viewmodels.SearchViewModel
@@ -28,9 +29,11 @@ class SearchRepositoryListFragment : Fragment() {
     var _binding: FragmentSearchRepositoryListBinding? = null
     val binding: FragmentSearchRepositoryListBinding get() = _binding!!
 
-    val sortBottomSheet: SortBottomSheetFragment by lazy { SortBottomSheetFragment() }
+    private val sortBottomSheet: SortBottomSheetFragment by lazy { SortBottomSheetFragment() }
+    private val dateRangeBottomSheetFragment: DateRangeBottomSheetFragment by lazy { DateRangeBottomSheetFragment() }
     var sort: Sort = Sort("Best Match", null, true)
     var order: Sort = Sort("Highest number of matches", "desc", true)
+    var dateRange: Sort = Sort("All Time", null, true)
 
     /**
      * Search Repository List ekranı ilk defa acıldıysa false değerini alır.
@@ -146,6 +149,38 @@ class SearchRepositoryListFragment : Fragment() {
         }
     }
 
+    private fun showDateRangeBottomSheet() {
+        val dateRangeList = arrayListOf(
+            Sort("Created in the last month", "1", false),
+            Sort("Created in the last 3 month", "3", false),
+            Sort("Created in the last 6 month", "6", false),
+            Sort("Created in the last 1 year", "12", false),
+            Sort("All Time", null, false),
+        )
+        dateRangeList.forEach { item ->
+            if (item.key == dateRange.key) {
+                item.isChecked = true
+            }
+        }
+        dateRangeBottomSheetFragment.setDateRangeList(
+            dateRangeList
+        )
+
+        dateRangeBottomSheetFragment.applySetOnClickListener { dateRangeSelected ->
+            page = 1
+            if (dateRangeSelected != null) {
+                dateRange = dateRangeSelected
+            }
+            performRepositorySearch()
+        }
+
+        if (!dateRangeBottomSheetFragment.isAdded) {
+            dateRangeBottomSheetFragment.show(
+                requireActivity().supportFragmentManager, "dateRangeBottomSheetFragment"
+            )
+        }
+    }
+
     private fun handleClickEventsListener() {
         binding.apply {
             ivBack.setOnClickListener {
@@ -153,6 +188,9 @@ class SearchRepositoryListFragment : Fragment() {
             }
             ivSort.setOnClickListener {
                 showSortBottomSheet()
+            }
+            ivDate.setOnClickListener {
+                showDateRangeBottomSheet()
             }
             searchRepositoryListAdapter.apply {
                 setOnClickListener { item, position ->
@@ -205,13 +243,29 @@ class SearchRepositoryListFragment : Fragment() {
 
     private fun performRepositorySearch() {
         binding.apply {
+            var range: String? = null
+            when (dateRange.key) {
+                "1" -> {
+                    range = "created:${manipulateDate(TimeUnits.MONTHS, -1)}..${getTodayDate()}"
+                }
+                "3" -> {
+                    range = "created:${manipulateDate(TimeUnits.MONTHS, -3)}..${getTodayDate()}"
+                }
+                "6" -> {
+                    range = "created:${manipulateDate(TimeUnits.MONTHS, -6)}..${getTodayDate()}"
+                }
+                "12" -> {
+                    range = "created:${manipulateDate(TimeUnits.YEARS, -1)}..${getTodayDate()}"
+                }
+            }
             if (!searchText.isNullOrBlank()) {
                 searchViewModel.searchRepository(
                     searchText = searchText!!,
                     pageSize = pageSize,
                     page = page,
                     sort = sort.key,
-                    order = order.key ?: "desc"
+                    order = order.key ?: "desc",
+                    dateRange = range
                 )
             }
         }

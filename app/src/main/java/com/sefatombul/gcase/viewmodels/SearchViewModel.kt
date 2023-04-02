@@ -6,10 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.sefatombul.gcase.data.model.AccessToken
-import com.sefatombul.gcase.data.model.search.GetRepositoryResponseModel
-import com.sefatombul.gcase.data.model.search.GetUserResponseModel
-import com.sefatombul.gcase.data.model.search.SearchRepositoryResponseModel
-import com.sefatombul.gcase.data.model.search.SearchUserResponseModel
+import com.sefatombul.gcase.data.model.search.*
 import com.sefatombul.gcase.data.repository.ApiRepository
 import com.sefatombul.gcase.utils.Resource
 import com.sefatombul.gcase.utils.globalSafeCall
@@ -38,6 +35,7 @@ class SearchViewModel @Inject constructor(
         MutableLiveData()
     val getUserResponse: LiveData<Resource<GetUserResponseModel>?> get() = _getUserResponse
 
+
     fun clearGetUserResponse() {
         _getUserResponse.postValue(null)
     }
@@ -59,10 +57,11 @@ class SearchViewModel @Inject constructor(
         searchText: String,
         pageSize: Int,
         page: Int,
+        dateRange: String? = null,
         sort: String? = null,
         order: String = "desc",
     ) = viewModelScope.launch {
-        searchRepositorySafeCall(searchText, sort, order, pageSize, page)
+        searchRepositorySafeCall(searchText, sort, order, pageSize, page, dateRange)
     }
 
     private suspend fun searchRepositorySafeCall(
@@ -71,10 +70,11 @@ class SearchViewModel @Inject constructor(
         order: String = "desc",
         pageSize: Int,
         page: Int,
+        dateRange: String? = null,
     ) {
         _searchRepositoryResponse.postValue(Resource.Loading())
         _searchRepositoryResponse.postValue(globalSafeCall(getApplication()) {
-            apiRepository.searchRepository(searchText, pageSize, page, sort, order)
+            apiRepository.searchRepository(searchText, pageSize, page, sort, order, dateRange)
         })
     }
 
@@ -101,8 +101,9 @@ class SearchViewModel @Inject constructor(
         type: String,
         sort: String? = null,
         order: String = "desc",
+        dateRange: String? = null,
     ) = viewModelScope.launch {
-        searchUserSafeCall(searchText, sort, order, pageSize, page, type)
+        searchUserSafeCall(searchText, sort, order, pageSize, page, type, dateRange)
     }
 
     private suspend fun searchUserSafeCall(
@@ -112,10 +113,11 @@ class SearchViewModel @Inject constructor(
         pageSize: Int,
         page: Int,
         type: String,
+        dateRange: String? = null,
     ) {
         _searchUserResponse.postValue(Resource.Loading())
         _searchUserResponse.postValue(globalSafeCall(getApplication()) {
-            apiRepository.searchUser(searchText, pageSize, page, sort, order, type)
+            apiRepository.searchUser(searchText, pageSize, page, sort, order, type, dateRange)
         })
     }
 

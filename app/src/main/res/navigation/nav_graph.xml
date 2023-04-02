@@ -58,15 +58,11 @@
         android:name="com.sefatombul.gcase.ui.repository.RepositoryListFragment"
         android:label="fragment_repository_list"
         tools:layout="@layout/fragment_repository_list">
+
         <action
-            android:id="@+id/action_repositoryListFragment_to_repositoryDetailFragment"
-            app:destination="@id/repositoryDetailFragment" />
+            android:id="@+id/action_repositoryListFragment_to_searchRepositoryDetailFragment"
+            app:destination="@id/searchRepositoryDetailFragment" />
     </fragment>
-    <fragment
-        android:id="@+id/repositoryDetailFragment"
-        android:name="com.sefatombul.gcase.ui.repository.RepositoryDetailFragment"
-        android:label="fragment_repository_detail"
-        tools:layout="@layout/fragment_repository_detail" />
     <fragment
         android:id="@+id/searchFragment"
         android:name="com.sefatombul.gcase.ui.search.repository.RepositorySearchFragment"

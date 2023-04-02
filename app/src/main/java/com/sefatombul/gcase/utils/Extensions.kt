@@ -31,6 +31,8 @@ import retrofit2.Response
 import timber.log.Timber
 import java.net.ConnectException
 import java.nio.charset.StandardCharsets
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.math.roundToInt
 
@@ -94,6 +96,22 @@ fun <T> LiveData<Resource<T>?>.observeCall(
     }
 }
 
+fun getTodayDate(): String {
+    val today = LocalDate.now()
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+    return today.format(formatter)
+}
+
+fun manipulateDate(timeUnit: TimeUnits, value: Int): String {
+    val today = LocalDate.now()
+    val manipulatedDate = when (timeUnit) {
+        TimeUnits.DAYS -> today.plusDays(value.toLong())
+        TimeUnits.MONTHS -> today.plusMonths(value.toLong())
+        TimeUnits.YEARS -> today.plusYears(value.toLong())
+    }
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+    return manipulatedDate.format(formatter)
+}
 
 suspend fun <T> globalSafeCallDB(
     context: Context,

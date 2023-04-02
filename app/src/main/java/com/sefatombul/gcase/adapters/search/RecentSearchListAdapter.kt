@@ -1,4 +1,4 @@
-package com.sefatombul.gcase.adapters
+package com.sefatombul.gcase.adapters.search
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

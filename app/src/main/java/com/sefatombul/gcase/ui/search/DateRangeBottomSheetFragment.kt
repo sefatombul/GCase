@@ -1,4 +1,4 @@
-package com.sefatombul.gcase.ui.search.sort
+package com.sefatombul.gcase.ui.search
 
 import android.app.Dialog
 import android.os.Bundle
@@ -7,37 +7,28 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import androidx.fragment.app.viewModels
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.sefatombul.gcase.R
 import com.sefatombul.gcase.adapters.search.SortListAdapter
 import com.sefatombul.gcase.data.model.search.Sort
-import com.sefatombul.gcase.databinding.FragmentRepositoryListBinding
+import com.sefatombul.gcase.databinding.FragmentDateRangeBottomSheetBinding
 import com.sefatombul.gcase.databinding.FragmentSortBottomSheetBinding
 import com.sefatombul.gcase.ui.MainActivity
 import com.sefatombul.gcase.utils.remove
 import com.sefatombul.gcase.utils.show
-import com.sefatombul.gcase.viewmodels.RepositoryViewModel
 
-class SortBottomSheetFragment : BottomSheetDialogFragment() {
-    private var _binding: FragmentSortBottomSheetBinding? = null
-    val binding: FragmentSortBottomSheetBinding get() = _binding!!
+class DateRangeBottomSheetFragment : BottomSheetDialogFragment() {
+    private var _binding: FragmentDateRangeBottomSheetBinding? = null
+    val binding: FragmentDateRangeBottomSheetBinding get() = _binding!!
 
-    private val sortAdapter: SortListAdapter by lazy { SortListAdapter() }
-    private val orderAdapter: SortListAdapter by lazy { SortListAdapter() }
+    private val dateRangeAdapter: SortListAdapter by lazy { SortListAdapter() }
+    private var dateRangeList = ArrayList<Sort>()
+    private var listener: ((dateRangeSelected: Sort?) -> Unit)? = null
 
-    private var sortList = ArrayList<Sort>()
-    private var orderList = ArrayList<Sort>()
-    private var listener: ((sortSelected: Sort?, orderSelected: Sort?) -> Unit)? = null
-
-    fun setSortList(tempList: ArrayList<Sort>) {
-        sortList = ArrayList(tempList)
-    }
-
-    fun setOrderList(tempList: ArrayList<Sort>) {
-        orderList = ArrayList(tempList)
+    fun setDateRangeList(tempList: ArrayList<Sort>) {
+        dateRangeList = ArrayList(tempList)
     }
 
     override fun getTheme() = R.style.BottomSheetDialogTheme
@@ -45,7 +36,7 @@ class SortBottomSheetFragment : BottomSheetDialogFragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentSortBottomSheetBinding.inflate(
+        _binding = FragmentDateRangeBottomSheetBinding.inflate(
             inflater, container, false
         )
         return binding.root
@@ -62,33 +53,22 @@ class SortBottomSheetFragment : BottomSheetDialogFragment() {
         binding.apply {
             mcvApply.setOnClickListener {
                 listener?.let { f ->
-                    f(sortAdapter.selectedItem, orderAdapter.selectedItem)
+                    f(dateRangeAdapter.selectedItem)
                 }
                 dismiss()
             }
         }
     }
 
-    fun applySetOnClickListener(f: (sortSelected: Sort?, orderSelected: Sort?) -> Unit) {
+    fun applySetOnClickListener(f: (dateRangeSelected: Sort?) -> Unit) {
         listener = f
     }
 
     private fun setupRecyclerviews() {
         binding.apply {
-            rvSort.adapter = sortAdapter
-            rvOrder.adapter = orderAdapter
+            rvDateRange.adapter = dateRangeAdapter
         }
-        sortAdapter.setList(sortList)
-        orderAdapter.setList(orderList)
-        binding.apply {
-            if (orderList.isNullOrEmpty()) {
-                rvOrder.remove()
-                clOrderSelection.remove()
-            } else {
-                clOrderSelection.show()
-                rvOrder.show()
-            }
-        }
+        dateRangeAdapter.setList(dateRangeList)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

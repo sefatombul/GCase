@@ -38,6 +38,19 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
+            android:id="@+id/ivDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingVertical="15dp"
+            android:paddingStart="17sp"
+            android:paddingEnd="14dp"
+            android:src="@drawable/date_range"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/ivSort"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/denim" />
+
+        <ImageView
             android:id="@+id/ivSort"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"

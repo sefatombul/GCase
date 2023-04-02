@@ -1,6 +1,9 @@
 package com.sefatombul.gcase.data.repository
 
+import com.sefatombul.gcase.data.model.search.SearchRepositoryResponseModel
+import com.sefatombul.gcase.data.model.search.SearchUserResponseModel
 import com.sefatombul.gcase.data.remote.ApiService
+import retrofit2.Response
 import retrofit2.http.Path
 import retrofit2.http.Query
 import javax.inject.Inject
@@ -14,14 +17,21 @@ class ApiRepository @Inject constructor(
         page: Int,
         sort: String? = null,
         order: String = "desc",
-    ) = if (sort != null) {
-        apiService.searchRepositoryWithSort(
-            searchText, sort, order, pageSize, page
-        )
-    } else {
-        apiService.searchRepository(
-            searchText, pageSize, page
-        )
+        dateRange: String? = null,
+    ): Response<SearchRepositoryResponseModel> {
+        var text = searchText
+        dateRange?.let { range ->
+            text = "$searchText $range"
+        }
+        return if (sort != null) {
+            apiService.searchRepositoryWithSort(
+                text, sort, order, pageSize, page
+            )
+        } else {
+            apiService.searchRepository(
+                text, pageSize, page
+            )
+        }
     }
 
     suspend fun getRepository(owner: String, repo: String) = apiService.getRepository(owner, repo)
@@ -31,16 +41,24 @@ class ApiRepository @Inject constructor(
         page: Int,
         sort: String? = null,
         order: String = "desc",
-        type: String
-    ) = if (sort != null) {
-        apiService.searchUser(
-            "$q type:$type", pageSize, page, sort, order
-        )
-    } else {
-        apiService.searchUser(
-            "$q type:$type", pageSize, page
-        )
+        type: String,
+        dateRange: String? = null,
+    ): Response<SearchUserResponseModel> {
+        var text = q
+        dateRange?.let { range ->
+            text = "$q $range"
+        }
+        return if (sort != null) {
+            apiService.searchUser(
+                "$text $type", pageSize, page, sort, order
+            )
+        } else {
+            apiService.searchUser(
+                "$text $type", pageSize, page
+            )
+        }
     }
 
     suspend fun getUser(owner: String) = apiService.getUser(owner)
+    suspend fun userRepository() = apiService.userRepository()
 }
