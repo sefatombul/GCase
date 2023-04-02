@@ -111,7 +111,7 @@ class OrganizationSearchFragment : Fragment() {
                          * Aranan kelime veritabanına eklendikten sonra veya
                          * ekleme işlemi başarısız bile olsa detay ekranına yönlendirme sağlanır.
                          **/
-                        searchText?.let { it1 -> navigateSearchOrganizationListFragmenment(it1) }
+                        searchText?.let { it1 -> navigateSearchOrganizationListFragment(it1) }
                         clearInsertRecentSearchResponse()
                     })
 
@@ -229,7 +229,7 @@ class OrganizationSearchFragment : Fragment() {
         }
     }
 
-    private fun navigateSearchOrganizationListFragmenment(text: String) {
+    private fun navigateSearchOrganizationListFragment(text: String) {
         val bundle = Bundle().apply {
             putString(Constants.SEARCH_KEY_BUNDLE, text)
         }

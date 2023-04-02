@@ -71,6 +71,10 @@ class HomeFragment : Fragment() {
             clSearchPersonLayout.setOnClickListener {
                 findNavController().safeNavigate(R.id.action_homeFragment_to_personSearchFragment2)
             }
+
+            clSearchOrganizationLayout.setOnClickListener {
+                findNavController().safeNavigate(R.id.action_homeFragment_to_organizationSearchFragment)
+            }
         }
     }
 

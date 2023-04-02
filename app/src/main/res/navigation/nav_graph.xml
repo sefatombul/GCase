@@ -57,7 +57,7 @@
         android:id="@+id/repositoryListFragment"
         android:name="com.sefatombul.gcase.ui.repository.RepositoryListFragment"
         android:label="fragment_repository_list"
-        tools:layout="@layout/fragment_repository_list" >
+        tools:layout="@layout/fragment_repository_list">
         <action
             android:id="@+id/action_repositoryListFragment_to_repositoryDetailFragment"
             app:destination="@id/repositoryDetailFragment" />
@@ -70,7 +70,7 @@
     <fragment
         android:id="@+id/searchFragment"
         android:name="com.sefatombul.gcase.ui.search.repository.RepositorySearchFragment"
-        android:label="SearchFragment" >
+        android:label="SearchFragment">
         <action
             android:id="@+id/action_searchFragment_to_searchRepositoryListFragment"
             app:destination="@id/searchRepositoryListFragment" />
@@ -82,7 +82,7 @@
     <fragment
         android:id="@+id/searchRepositoryListFragment"
         android:name="com.sefatombul.gcase.ui.search.repository.SearchRepositoryListFragment"
-        android:label="SearchRepositoryListFragment" >
+        android:label="SearchRepositoryListFragment">
         <action
             android:id="@+id/action_searchRepositoryListFragment_to_searchRepositoryDetailFragment"
             app:destination="@id/searchRepositoryDetailFragment" />
@@ -90,7 +90,7 @@
     <fragment
         android:id="@+id/personSearchFragment2"
         android:name="com.sefatombul.gcase.ui.search.person.PersonSearchFragment"
-        android:label="PersonSearchFragment" >
+        android:label="PersonSearchFragment">
         <action
             android:id="@+id/action_personSearchFragment2_to_searchPersonListFragment"
             app:destination="@id/searchPersonListFragment" />
@@ -99,7 +99,7 @@
         android:id="@+id/searchPersonListFragment"
         android:name="com.sefatombul.gcase.ui.search.person.SearchPersonListFragment"
         android:label="fragment_search_person_list"
-        tools:layout="@layout/fragment_search_person_list" >
+        tools:layout="@layout/fragment_search_person_list">
         <action
             android:id="@+id/action_searchPersonListFragment_to_searchPersonDetailFragment"
             app:destination="@id/searchPersonDetailFragment" />
@@ -109,15 +109,11 @@
         android:name="com.sefatombul.gcase.ui.search.person.SearchPersonDetailFragment"
         android:label="fragment_search_person_detail"
         tools:layout="@layout/fragment_search_person_detail" />
-    <fragment
-        android:id="@+id/searchOrganizationDetailFragment"
-        android:name="com.sefatombul.gcase.ui.search.organization.SearchOrganizationDetailFragment"
-        android:label="fragment_search_organization_detail"
-        tools:layout="@layout/fragment_search_organization_detail" />
+
     <fragment
         android:id="@+id/organizationSearchFragment"
         android:name="com.sefatombul.gcase.ui.search.organization.OrganizationSearchFragment"
-        android:label="OrganizationSearchFragment" >
+        android:label="OrganizationSearchFragment">
         <action
             android:id="@+id/action_organizationSearchFragment_to_searchOrganizationListFragment"
             app:destination="@id/searchOrganizationListFragment" />
@@ -126,9 +122,9 @@
         android:id="@+id/searchOrganizationListFragment"
         android:name="com.sefatombul.gcase.ui.search.organization.SearchOrganizationListFragment"
         android:label="fragment_search_organization_list"
-        tools:layout="@layout/fragment_search_organization_list" >
+        tools:layout="@layout/fragment_search_organization_list">
         <action
-            android:id="@+id/action_searchOrganizationListFragment_to_searchOrganizationDetailFragment"
-            app:destination="@id/searchOrganizationDetailFragment" />
+            android:id="@+id/action_searchOrganizationListFragment_to_searchPersonDetailFragment"
+            app:destination="@id/searchPersonDetailFragment" />
     </fragment>
 </navigation>
