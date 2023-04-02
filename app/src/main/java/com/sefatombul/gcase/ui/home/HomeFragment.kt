@@ -75,6 +75,10 @@ class HomeFragment : Fragment() {
             clSearchOrganizationLayout.setOnClickListener {
                 findNavController().safeNavigate(R.id.action_homeFragment_to_organizationSearchFragment)
             }
+
+            clStarredRepositoriesLayout.setOnClickListener {
+                findNavController().safeNavigate(R.id.action_homeFragment_to_starredFragment)
+            }
         }
     }
 

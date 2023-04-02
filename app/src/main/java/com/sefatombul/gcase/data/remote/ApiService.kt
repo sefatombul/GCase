@@ -1,5 +1,6 @@
 package com.sefatombul.gcase.data.remote
 
+import android.content.ClipData.Item
 import com.sefatombul.gcase.data.model.ProfileResponseModel
 import com.sefatombul.gcase.data.model.search.*
 import retrofit2.Response
@@ -58,4 +59,10 @@ interface ApiService {
 
     @GET("/user")
     suspend fun getUserProfile(): Response<ProfileResponseModel>
+
+    @GET("/user/starred")
+    suspend fun getStarredRepositories(
+        @Query("per_page") pageSize: Int,
+        @Query("page") page: Int,
+    ): Response<List<Items>>
 }

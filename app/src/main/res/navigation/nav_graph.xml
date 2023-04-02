@@ -37,6 +37,9 @@
         <action
             android:id="@+id/action_homeFragment_to_organizationSearchFragment"
             app:destination="@id/organizationSearchFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_starredFragment"
+            app:destination="@id/starredFragment" />
     </fragment>
     <fragment
         android:id="@+id/splashFragment"
@@ -132,4 +135,12 @@
         android:name="com.sefatombul.gcase.ui.ProfileFragment"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" />
+    <fragment
+        android:id="@+id/starredFragment"
+        android:name="com.sefatombul.gcase.ui.StarredFragment"
+        android:label="StarredFragment" >
+        <action
+            android:id="@+id/action_starredFragment_to_searchRepositoryDetailFragment"
+            app:destination="@id/searchRepositoryDetailFragment" />
+    </fragment>
 </navigation>

@@ -62,4 +62,8 @@ class ApiRepository @Inject constructor(
     suspend fun getUser(owner: String) = apiService.getUser(owner)
     suspend fun userRepository() = apiService.userRepository()
     suspend fun getUserProfile() = apiService.getUserProfile()
+    suspend fun getStarredRepositories(
+        pageSize: Int,
+        page: Int,
+    ) = apiService.getStarredRepositories(pageSize, page)
 }

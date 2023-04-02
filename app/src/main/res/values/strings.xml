@@ -44,4 +44,5 @@
     <string name="search_organization">Search Organization</string>
     <string name="organization">Organization</string>
     <string name="date_range">Date Range</string>
+    <string name="starred_repository">Starred Repositories</string>
 </resources>
