@@ -74,7 +74,11 @@
     <fragment
         android:id="@+id/searchRepositoryDetailFragment"
         android:name="com.sefatombul.gcase.ui.search.repository.SearchRepositoryDetailFragment"
-        android:label="SearchRepositoryDetailFragment" />
+        android:label="SearchRepositoryDetailFragment" >
+        <action
+            android:id="@+id/action_searchRepositoryDetailFragment_to_searchPersonDetailFragment"
+            app:destination="@id/searchPersonDetailFragment" />
+    </fragment>
     <fragment
         android:id="@+id/searchRepositoryListFragment"
         android:name="com.sefatombul.gcase.ui.search.repository.SearchRepositoryListFragment"
@@ -123,4 +127,9 @@
             android:id="@+id/action_searchOrganizationListFragment_to_searchPersonDetailFragment"
             app:destination="@id/searchPersonDetailFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.sefatombul.gcase.ui.ProfileFragment"
+        android:label="fragment_profile"
+        tools:layout="@layout/fragment_profile" />
 </navigation>

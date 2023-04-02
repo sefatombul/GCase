@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.sefatombul.gcase.R
 import com.sefatombul.gcase.data.model.search.GetRepositoryResponseModel
 import com.sefatombul.gcase.databinding.FragmentSearchRepositoryDetailBinding
 import com.sefatombul.gcase.ui.MainActivity
@@ -20,6 +21,8 @@ class SearchRepositoryDetailFragment : Fragment() {
     val binding: FragmentSearchRepositoryDetailBinding get() = _binding!!
     val searchViewModel: SearchViewModel by viewModels()
 
+    var isPopBackStack = false
+
     /**
      * Detay bilgisi alınmak istenen repositorinin hangi kullanıcıya ait olduğu bilgisi
      * */
@@ -29,6 +32,7 @@ class SearchRepositoryDetailFragment : Fragment() {
      * Detay bilgisi alınmak istenen repositorinin ismi
      * */
     private var repoName: String? = null
+
     /**
      * Repository detayı için tutulan obje
      * */
@@ -49,9 +53,13 @@ class SearchRepositoryDetailFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentSearchRepositoryDetailBinding.inflate(
-            inflater, container, false
-        )
+        if (_binding == null) {
+            _binding = FragmentSearchRepositoryDetailBinding.inflate(
+                inflater, container, false
+            )
+        } else {
+            isPopBackStack = true
+        }
         return binding.root
     }
 
@@ -60,12 +68,22 @@ class SearchRepositoryDetailFragment : Fragment() {
         (requireActivity() as? MainActivity)?.hideBottomNavigation()
         subscribeObversers()
         handleClickEventsListener()
-        getRepository()
+        if (!isPopBackStack) getRepository()
     }
+
     private fun handleClickEventsListener() {
         binding.apply {
             ivBack.setOnClickListener {
                 findNavController().backStackCustom()
+            }
+
+            clProfile.setOnClickListener {
+                val bundle = Bundle().apply {
+                    putString(Constants.USER_BUNDLE_KEY, model?.owner?.login)
+                }
+                findNavController().navigate(
+                    R.id.action_searchRepositoryDetailFragment_to_searchPersonDetailFragment, bundle
+                )
             }
         }
     }

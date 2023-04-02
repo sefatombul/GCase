@@ -1,5 +1,6 @@
 package com.sefatombul.gcase.data.remote
 
+import com.sefatombul.gcase.data.model.ProfileResponseModel
 import com.sefatombul.gcase.data.model.search.*
 import retrofit2.Response
 import retrofit2.http.GET
@@ -54,4 +55,7 @@ interface ApiService {
 
     @GET("/user/repos")
     suspend fun userRepository(): Response<List<Items>>
+
+    @GET("/user")
+    suspend fun getUserProfile(): Response<ProfileResponseModel>
 }

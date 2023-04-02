@@ -20,6 +20,8 @@ class SearchPersonDetailFragment : Fragment() {
     val binding: FragmentSearchPersonDetailBinding get() = _binding!!
     val searchViewModel: SearchViewModel by viewModels()
 
+    var isPopBackStack = false
+
     /**
      * Detay bilgisi alınmak istenen kullanıcı
      * */
@@ -44,9 +46,13 @@ class SearchPersonDetailFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentSearchPersonDetailBinding.inflate(
-            inflater, container, false
-        )
+        if (_binding == null) {
+            _binding = FragmentSearchPersonDetailBinding.inflate(
+                inflater, container, false
+            )
+        } else {
+            isPopBackStack = true
+        }
         return binding.root
     }
 
@@ -55,7 +61,7 @@ class SearchPersonDetailFragment : Fragment() {
         (requireActivity() as? MainActivity)?.hideBottomNavigation()
         subscribeObversers()
         handleClickEventsListener()
-        getPerson()
+        if (!isPopBackStack) getPerson()
 
     }
 
