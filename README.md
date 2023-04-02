@@ -1,4 +1,6 @@
 # GCase
+[GCase Apk](https://drive.google.com/file/d/16lNe8byw0gju5kTML10iSUbgLYUuupZH/view) Buradan ulaşabilirsiniz.
+
 GCase içerisinde My Work ve Search Option alanları bulunmaktadır.
 
 ## My Work
