@@ -6,7 +6,7 @@ GCase içerisinde My Work ve Search Option alanları bulunmaktadır.
 ## My Work
 ### Repositories 
 Kullanıcının kendi repository'leri listelenir.
-Repository detayı görüntelenbilir, repository detay ekranındayken kullanıcı bilgisi üzerine tıklanarak kullanıcı detayları görüntülenebilir.
+Repository detayı görüntülenebilir, repository detay ekranındayken kullanıcı bilgisi üzerine tıklanarak kullanıcı detayları görüntülenebilir.
 
 ![image](https://user-images.githubusercontent.com/121038359/229376608-1890faf8-73b5-4406-9fe5-f35957079b5a.png)
 
